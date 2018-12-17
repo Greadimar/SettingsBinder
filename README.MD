@@ -1,87 +1,98 @@
-#SettingsBinder
-Библиотека имеет следующие возможности:
-* готовые qt виджеты можно привязать к заданным переменным, что обеспечивает их автоматическое изменение при управлении виджетом и наоборот
-* автоматическое сохранение заданных переменных 
-* автоматическая загрузка заданных  переменных в программу и привязанные виджеты
+п»ї#SettingsBinder
+Р‘РёР±Р»РёРѕС‚РµРєР° РёРјРµРµС‚ СЃВЃР»РµРґСѓСЋС‰РёРµ РІРѕР·РјРѕР¶РЅРѕСЃВЃС‚Рё:
+* РіРѕС‚РѕРІС‹Рµ qt РІРёРґР¶РµС‚С‹ РјРѕР¶РЅРѕ РїСЂРёРІСЏВЏР·Р°С‚СЊ Рє Р·Р°РґР°РЅРЅС‹Рј РїРµСЂРµРјРµРЅРЅС‹Рј, С‡С‚Рѕ РѕР±РµСЃВЃРїРµС‡РёРІР°РµС‚ РёС… Р°РІС‚РѕРјР°С‚РёС‡РµСЃВЃРєРѕРµ РёР·РјРµРЅРµРЅРёРµ РїСЂРё СѓРїСЂР°РІР»РµРЅРёРё РІРёРґР¶РµС‚РѕРј Рё РЅР°РѕР±РѕСЂРѕС‚
+* Р°РІС‚РѕРјР°С‚РёС‡РµСЃВЃРєРѕРµ СЃВЃРѕС…СЂР°РЅРµРЅРёРµ Р·Р°РґР°РЅРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С… 
+* Р°РІС‚РѕРјР°С‚РёС‡РµСЃВЃРєР°СЏВЏ Р·Р°РіСЂСѓР·РєР° Р·Р°РґР°РЅРЅС‹С…  РїРµСЂРµРјРµРЅРЅС‹С… РІ РїСЂРѕРіСЂР°РјРјСѓ Рё РІ РїСЂРёРІСЏВЏР·Р°РЅРЅС‹Рµ РІРёРґР¶РµС‚С‹
 
-Для наглядного представления можно клонировать проект и подключить settingsbinder.pro
+Р”Р»СЃВЏ РЅР°РіР»СЏВЏРґРЅРѕРіРѕ РїСЂРµРґСЃВЃС‚Р°РІР»РµРЅРёСЏ РјРѕР¶РЅРѕ РєР»РѕРЅРёСЂРѕРІР°С‚СЊ СЂРµРїРѕР·РёС‚РѕСЂРёР№ Рё РѕС‚РєСЂС‹С‚СЊ С‚РµСЃС‚РѕРІС‹Р№ РїСЂРѕРµРєС‚ settingsbinder.pro
 
-#Использование
-Для использования возможностей библиотеки требуется выполнить следующие действия:
-1. Склонировать проект в папку
-2. Добавить в .pro файл своего проекта, например:
+#РСЃВЃРїРѕР»СЊР·РѕРІР°РЅРёРµ
+Р”Р»СЏ РёСЃВЃРїРѕР»СЊР·РѕРІР°РЅРёСЏВЏ РІРѕР·РјРѕР¶РЅРѕСЃВЃС‚РµР№ Р±РёР±Р»РёРѕС‚РµРєРё С‚СЂРµР±СѓРµС‚СЃСЏВЏ РІС‹РїРѕР»РЅРёС‚СЊ СЃВЃР»РµРґСѓСЋС‰РёРµ РґРµР№СЃВЃС‚РІРёСЏВЏ:
+1. РЎРєР»РѕРЅРёСЂРѕРІР°С‚СЊ РїСЂРѕРµРєС‚ РІ РїР°РїРєСѓ
+2. Р”РѕР±Р°РІРёС‚СЊ РІ .pro С„Р°Р№Р» СЃВЃРІРѕРµРіРѕ РїСЂРѕРµРєС‚Р°, РЅР°РїСЂРёРјРµСЂ:
 	<pre><code>
 	include($$(SHARED_LIBS)/settingsbinder/settingsbinder.pri)
 	</code></pre>
-(если директория SHARED_LIBS записана в системных переменных, иначе просто выбрать путь)
-3. Для записи переменных создать класс, унаследованный от BindedSettings
-4. В унаследованном классе создать переменные следующим образом:
-	<pre><code>
+(РµСЃВЃР»Рё РґРёСЂРµРєС‚РѕСЂРёСЏВЏ SHARED_LIBS Р·Р°РїРёСЃВЃР°РЅР° РІ СЃВЃРёСЃВЃС‚РµРјРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С…, РёРЅР°С‡Рµ РїСЂРѕСЃВЃС‚Рѕ РІС‹Р±СЂР°С‚СЊ РїСѓС‚СЊ)
+3. Р”Р»СЏВЏ Р·Р°РїРёСЃВЃРё РїРµСЂРµРјРµРЅРЅС‹С… СЃВЃРѕР·РґР°С‚СЊ РєР»Р°СЃВЃСЃВЃ, СѓРЅР°СЃВЃР»РµРґРѕРІР°РЅРЅС‹Р№ РѕС‚ BindedSettings
+4. Р’ СѓРЅР°СЃВЃР»РµРґРѕРІР°РЅРЅРѕРј РєР»Р°СЃВЃСЃВЃРµ СЃВЃРѕР·РґР°С‚СЊ РїРµСЂРµРјРµРЅРЅС‹Рµ СЃВЃР»РµРґСѓСЋС‰РёРј РѕР±СЂР°Р·РѕРј:
+<pre><code>
 	class Settings: public BindedSettings
 	{
 		Q_OBJECT
 	public:
 		Q_PROPERTY(QString stringForLe READ stringForLe WRITE setStringForLe NOTIFY stringForLeChanged)
-		QString stringForLe() const;							//функция getter (возвращающая m_stringForLe)
-		void setStringForLe(const QString &stringForLe);		//функция setter (устанавливает m_stringForLe)
+		 //С„СѓРЅРєС†РёСЏВЏ getter (РІРѕР·РІСЂР°С‰Р°СЋС‰Р°СЏВЏ m_stringForLe)
+		QString stringForLe() const;
+		//С„СѓРЅРєС†РёСЏВЏ setter (СѓСЃВЃС‚Р°РЅР°РІР»РёРІР°РµС‚ m_stringForLe)
+		void setStringForLe(const QString &stringForLe 
 	private:
-		QString m_stringForLe;									//переменная
-	</code></pre>
-Данное действие удобно выполнить в среде QtCreator, создав переменную m_stringForLe, затем нажать правой кнопкой мыши на ней и выбрать "рефакторинг - установить методы получения и установки значения"
-5. В классе интерфейса привязать виджет к переменной
+		//РїРµСЂРµРјРµРЅРЅР°СЏВЏ
+		QString m_stringForLe;				
+	}
+</code></pre>
+Р”Р°РЅРЅРѕРµ РґРµР№СЃВЃС‚РІРёРµ СѓРґРѕР±РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ РІ СЃВЃСЂРµРґРµ QtCreator, СЃВЃРѕР·РґР°РІ РїРµСЂРµРјРµРЅРЅСѓСЋ m_stringForLe, Р·Р°С‚РµРј РЅР°Р¶Р°С‚СЊ РїСЂР°РІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё РЅР° РЅРµР№ Рё РІС‹Р±СЂР°С‚СЊ "СЂРµС„Р°РєС‚РѕСЂРёРЅРі - СѓСЃВЃС‚Р°РЅРѕРІРёС‚СЊ РјРµС‚РѕРґС‹ РїРѕР»СѓС‡РµРЅРёСЏВЏ Рё СѓСЃВЃС‚Р°РЅРѕРІРєРё Р·РЅР°С‡РµРЅРёСЏВЏ"
+5. Р’ РєР»Р°СЃВЃСЃВЃРµ РёРЅС‚РµСЂС„РµР№СЃВЃР° РїСЂРёРІСЏР·Р°С‚СЊ РІРёРґР¶РµС‚ Рє РїРµСЂРµРјРµРЅРЅРѕР№
 	<pre><code>
-		settings->bindWtToProp(ui->leString, "stringForLe");	//первый аргумент - виджет, второй - значение из Q_PROPERTY
+		settings->bindWtToProp(ui->leString, "stringForLe");
+			//РїРµСЂРІС‹Р№ Р°СЂРіСѓРјРµРЅС‚ - РІРёРґР¶РµС‚, РІС‚РѕСЂРѕР№ - Р·РЅР°С‡РµРЅРёРµ РёР· Q_PROPERTY
 	</code></pre>
-6. Для привязки enum class к поддерживаемому виджету требуется в унаследованном от BindedSettings классе написать следующее:
-	<pre><code>
-	class Settings: public BindedSettings
-	{
-		Q_OBJECT
-	public:
-		enum class States{
-			state0 = 0,
-			state1 = 1,
-			state2 = 2
-		};
-		Q_ENUM(States)											//Обязательно регистрируем наш класс в Q_ENUM
-		Q_PROPERTY(States stateForGrpb READ stateForGrpb WRITE setStateForGrpb NOTIFY stateForGrpbChanged)
-		Settings::States stateForGrpb() const;					//функция getter (возвращающая m_stringForLe)
-		void setStateForGrpb(const States &stateForGrpb);		//функция setter (устанавливает m_stringForLe)
-		Q_INVOKABLE QVariant stateForGrpbVariant(int val){		//обязательная функция для преобразования в QVariant
-			return getVariantEnumClass<States>(val);
-		}
-	private:
-		State m_state;									//переменная
-	</code></pre>
+6. Р”Р»СЏВЏ РїСЂРёРІСЏР·РєРё enum class Рє РїРѕРґРґРµСЂР¶РёРІР°РµРјРѕРјСѓ РІРёРґР¶РµС‚Сѓ С‚СЂРµР±СѓРµС‚СЃВЃСЏВЏ РІ СѓРЅР°СЃВЃР»РµРґРѕРІР°РЅРЅРѕРј РѕС‚ BindedSettings РєР»Р°СЃВЃСЃВЃРµ РЅР°РїРёСЃВЃР°С‚СЊ СЃВЃР»РµРґСѓСЋС‰РµРµ:
+<pre><code>
+class Settings: public BindedSettings
+{
+	Q_OBJECT
+public:
+	enum class States{
+		state0 = 0,
+		state1 = 1,
+		state2 = 2
+	};
+	//РћР±СЏР·Р°С‚РµР»СЊРЅРѕ СЂРµРіРёСЃВЃС‚СЂРёСЂСѓРµРј РЅР°С€ РєР»Р°СЃВЃСЃВЃ РІ Q_ENUM
+	Q_ENUM(States)											
+	Q_PROPERTY(States stateForGrpb READ stateForGrpb WRITE setStateForGrpb NOTIFY stateForGrpbChanged)
+	//С„СѓРЅРєС†РёСЏ getter (РІРѕР·РІСЂР°С‰Р°СЋС‰Р°СЏВЏ state)
+	Settings::States stateForGrpb() const;		
+	//С„СѓРЅРєС†РёСЏВЏ setter (СѓСЃВЃС‚Р°РЅР°РІР»РёРІР°РµС‚ state)
+	void setStateForGrpb(const States &stateForGrpb);		
+	//РѕР±СЏР·Р°С‚РµР»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏВЏ РґР»СЏВЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏВЏ РІ QVariant
+	Q_INVOKABLE QVariant stateForGrpbVariant(int val){		
+		return getVariantEnumClass<States>(val);
+	}
+private:
+	State m_state;	//РїРµСЂРµРјРµРЅРЅР°СЏВЏ
+</code></pre>
 
-7. В классе интерфейса привязать QButtonGroup к переменной enum class
-	<pre><code>
-		btngrpStates = new QButtonGroup();									// создаём пустую группу кнопок
-		btngrpStates->addButton(ui->radioButton, static_cast<int>(Settings::States::state0);            			// добавляем кнопки, соответствующие значению enum class в int
-		btngrpStates->addButton(ui->radioButton_2, static_cast<int>(Settings::States::state1));          
-		btngrpStates->addButton(ui->radioButton_3, static_cast<int>(Settings::States::state2);          
-		settings->bindButtonGroupAsEnum<Settings::States>(btngrpStates, "stateForGrpb");							//первый аргумент - виджет, второй - значение из Q_PROPERTY
-	</code></pre>
+7. Р’ РєР»Р°СЃВЃСЃВЃРµ РёРЅС‚РµСЂС„РµР№СЃВЃР° РїСЂРёРІСЏВЏР·Р°С‚СЊ QButtonGroup Рє РїРµСЂРµРјРµРЅРЅРѕР№ enum class
+<pre><code>
+	// СЃВЃРѕР·РґР°С‘Рј РїСѓСЃВЃС‚СѓСЋ РіСЂСѓРїРїСѓ РєРЅРѕРїРѕРє
+	btngrpStates = new QButtonGroup();	
+	// РґРѕР±Р°РІР»СЏВЏРµРј РєРЅРѕРїРєРё, СЃВЃРѕРѕС‚РІРµС‚СЃВЃС‚РІСѓСЋС‰РёРµ Р·РЅР°С‡РµРЅРёСЋ enum class РІ int							
+	btngrpStates->addButton(ui->radioButton, static_cast<int>(Settings::States::state0);           		
+	btngrpStates->addButton(ui->radioButton_2, static_cast<int>(Settings::States::state1));          
+	btngrpStates->addButton(ui->radioButton_3, static_cast<int>(Settings::States::state2);    
+	//РїРµСЂРІС‹Р№ Р°СЂРіСѓРјРµРЅС‚ - РІРёРґР¶РµС‚, РІС‚РѕСЂРѕР№ - Р·РЅР°С‡РµРЅРёРµ РёР· Q_PROPERTY				
+	settings->bindButtonGroupAsEnum<Settings::States>(btngrpStates, "stateForGrpb");			
+</code></pre>
 
-8. Сохранение и загрузку данных осуществлять через save() и load() унаследованного от BindedSettings класса
+8. РЎРѕС…СЂР°РЅРµРЅРёРµ Рё Р·Р°РіСЂСѓР·РєСѓ РґР°РЅРЅС‹С… РѕСЃВЃСѓС‰РµСЃВЃС‚РІР»СЏВЏС‚СЊ С‡РµСЂРµР· save() Рё load() СѓРЅР°СЃВЃР»РµРґРѕРІР°РЅРЅРѕРіРѕ РѕС‚ BindedSettings РєР»Р°СЃВЃСЃВЃР°
 
-# Особые случаи
-1. Если требуется QLineEdit привязать данные формата HEX, то нужно в классе интерфейса добавить следующую строку перед привязкой:
-	<pre><code>
-	    settings->setIntTypePropertyTo(ui->leUintHex, Settings::IntType::hex);
-	</code></pre>
-2. Если требуется сохранять и загружать переменные для класса, не унаследованного от BindedSettings, но унаследованного от QObject, то следует задать в нём переменные по тому же принципу(см п.4 пред. абзаца) и для сохранения и загрузки использовать объект класса SettingsSaver:
-	<pre><code>
-	    SettingsSaver* settingsSaver = new SettingsSaver(myObjectWithProperties);
-		settingsSaver.load();
-		settingsSaver.save();
-	</code></pre>
+# РћСЃВЃРѕР±С‹Рµ СЃВЃР»СѓС‡Р°Рё
+1. Р•СЃВЃР»Рё С‚СЂРµР±СѓРµС‚СЃСЏВЏ QLineEdit РїСЂРёРІСЏВЏР·Р°С‚СЊ РґР°РЅРЅС‹Рµ С„РѕСЂРјР°С‚Р° HEX, С‚Рѕ РЅСѓР¶РЅРѕ РІ РєР»Р°СЃВЃСЃВЃРµ РёРЅС‚РµСЂС„РµР№СЃВЃР° РґРѕР±Р°РІРёС‚СЊ СЃВЃР»РµРґСѓСЋС‰СѓСЋ СЃВЃС‚СЂРѕРєСѓ РїРµСЂРµРґ РїСЂРёРІСЏВЏР·РєРѕР№:
+<pre><code>
+	settings->setIntTypePropertyTo(ui->leUintHex, Settings::IntType::hex);
+</code></pre>
+2. Р•СЃВЃР»Рё С‚СЂРµР±СѓРµС‚СЃВЃСЏ СЃВЃРѕС…СЂР°РЅСЏВЏС‚СЊ Рё Р·Р°РіСЂСѓР¶Р°С‚СЊ РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏВЏ РєР»Р°СЃВЃСЃВЃР°, РЅРµ СѓРЅР°СЃВЃР»РµРґРѕРІР°РЅРЅРѕРіРѕ РѕС‚ BindedSettings, РЅРѕ СѓРЅР°СЃВЃР»РµРґРѕРІР°РЅРЅРѕРіРѕ РѕС‚ QObject, С‚Рѕ СЃВЃР»РµРґСѓРµС‚ Р·Р°РґР°С‚СЊ РІ РЅС‘Рј РїРµСЂРµРјРµРЅРЅС‹Рµ РїРѕ С‚РѕРјСѓ Р¶Рµ РїСЂРёРЅС†РёРїСѓ(СЃВЃРј Рї.4 РїСЂРµРґ. Р°Р±Р·Р°С†Р°) Рё РґР»СЏ СЃВЃРѕС…СЂР°РЅРµРЅРёСЏВЏ Рё Р·Р°РіСЂСѓР·РєРё РёСЃВЃРїРѕР»СЊР·РѕРІР°С‚СЊ РѕР±СЉРµРєС‚ РєР»Р°СЃВЃСЃВЃР° SettingsSaver:
+<pre><code>
+	SettingsSaver* settingsSaver = new SettingsSaver(myObjectWithProperties);
+	settingsSaver.load();
+	settingsSaver.save();
+</code></pre>
 
-# Поддерживаемые привязки на текущий момент:
+# РџРѕРґРґРµСЂР¶РёРІР°РµРјС‹Рµ РїСЂРёРІСЏВЏР·РєРё РЅР° С‚РµРєСѓС‰РёР№ РјРѕРјРµРЅС‚:
 	QLineEdit - QString / uint (decimal) / uint (hex) / int / short / long / double 
 	QComboBox - int
-	QSpinBox - int
+	QSpinBox - int / uint
 	QDoubleSpinBox - double
 	QCheckBox - bool
 	QGroupButton - enum class
-	
