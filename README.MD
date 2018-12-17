@@ -72,7 +72,7 @@ private:
 	btngrpStates = new QButtonGroup();	
 	// добавляем кнопки, соответствующие значению enum class в int							
 	btngrpStates->addButton(ui->radioButton, static_cast<int>(Settings::States::state0);           		
-	btngrpStates->addButton(ui->radioButton_2, static_cast<int>(Settings::States::state1));          
+	btngrpStates->addButton(ui->radioButton_2, static_cast<int>(Settings::States::state1);          
 	btngrpStates->addButton(ui->radioButton_3, static_cast<int>(Settings::States::state2);    
 	//первый аргумент - виджет, второй - значение из Q_PROPERTY				
 	settings->bindButtonGroupAsEnum<Settings::States>(btngrpStates, "stateForGrpb");			
