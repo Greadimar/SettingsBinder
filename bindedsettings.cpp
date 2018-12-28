@@ -50,7 +50,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     connect(this, signal, this, slot, Qt::DirectConnection);
     //connecting textEdited and write method of property
     if (mp.isWritable()){
-        connect(le, &QLineEdit::textEdited, this, [=](){
+        connect(le, &QLineEdit::textChanged, this, [=](){
             if (debugBs) qDebug()<<Q_FUNC_INFO<<"on textEdit changing property";
             QVariant var(mp.type());
             if (stringToVariant(le->text(), var, t)){
