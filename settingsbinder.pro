@@ -35,6 +35,7 @@ HEADERS += \
 
 FORMS += \
         mainwidget.ui
+
 include($$(SHARED_LIBS)/settingsbinder/settingsbinder.pri)
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

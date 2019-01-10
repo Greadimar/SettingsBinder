@@ -1,18 +1,22 @@
 #include "settingssaver.h"
 
 
-SettingsSaver::SettingsSaver(QObject *settings) : QObject(settings), target(settings), metaTarget(getMeta(settings)), propertiesList(collectPropsNames(settings))
+SettingsSaver::SettingsSaver(QObject *parent) : QObject(parent)
 {
 }
 
-void SettingsSaver::save()
+void SettingsSaver::save(QObject* target, QString extraGroupKey)
 {
+    this->target = target;
+    const QMetaObject* metaTarget = getMeta(target);
+    propertiesList = collectPropsNames(target);
+
     if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
-    QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaTarget->className()) + ".ini");
+    QString setsName(QDir::currentPath() + "/autosettings.ini");
     QSettings qsets(setsName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
-    qsets.beginGroup("Settings");
+    qsets.beginGroup(QString::fromLocal8Bit("Settings_")+QString::fromLocal8Bit(metaTarget->className()) + extraGroupKey);
     for (int i = offset; i < end; i++){
        QMetaProperty metaProp = metaTarget->property(i);
        if (metaProp.isEnumType()){
@@ -24,13 +28,16 @@ void SettingsSaver::save()
     qsets.endGroup();
 }
 
-void SettingsSaver::load()
+void SettingsSaver::load(QObject *target, QString extraGroupKey)
 {
+    this->target = target;
+    const QMetaObject* metaTarget = getMeta(target);
+    propertiesList = collectPropsNames(target);
     if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
-    QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaTarget->className()) + ".ini");
+    QString setsName(QDir::currentPath() + "/autosettings.ini");
     QSettings qsets(setsName, QSettings::IniFormat);
-    qsets.beginGroup("Settings");
+    qsets.beginGroup(QString::fromLocal8Bit("Settings_")+QString::fromLocal8Bit(metaTarget->className()) + extraGroupKey);
     qDebug()<<propNames.size();
     for (QString& propName: propNames){
         QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(charsFromStr(propName)));

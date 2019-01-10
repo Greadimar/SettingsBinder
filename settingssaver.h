@@ -10,17 +10,16 @@ class SettingsSaver: public QObject
 {
     Q_OBJECT
 public:
-     SettingsSaver(QObject *settings);
+     SettingsSaver(QObject *parent);
         ~SettingsSaver(){
     }
     QObject* target;
-    const QMetaObject* metaTarget;
-    void save();
-    void load();
-    const QMetaObject* getMeta(const QObject* obj){
+    void save(QObject *target, QString extraGroupKey = "");
+    void load(QObject *target, QString extraGroupKey = "");
+    const QMetaObject* getMeta(QObject* obj){
         return obj->metaObject();
     }
-    const QStringList collectPropsNames(const QObject* obj){
+    QStringList collectPropsNames(const QObject* obj){
         const QMetaObject* metaObject = obj->metaObject();
         QStringList properties;
         for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i)
@@ -34,6 +33,6 @@ public:
         return QByteArray(str.toLocal8Bit()).data();
     }
 
-    const QStringList propertiesList;
+    QStringList propertiesList;
 };
 #endif // SETTINGSSAVER_H
