@@ -66,6 +66,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
 bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName, IntType type){
     setIntTypePropertyTo(targetWt, type);
     bindWtToProp(targetWt, propertyName);
+    return true;
 }
 bool BindedSettings::bindWtToProp(QSpinBox *targetWt, const char *propertyName)
 {
@@ -276,6 +277,10 @@ bool BindedSettings::stringFromVariant(const QVariant &val, QString &result, Bin
     bool isOk{false};
     if (t == QVariant::Type::UInt){
         result = QString::number(val.toUInt(), static_cast<int>(type));
+        if (type == IntType::hex){
+            while (result.count() < 8) result.prepend("0");
+            //result.prepend("0x");
+        }
         return isOk = true;
     }
     if (t == QVariant::Type::Int){
