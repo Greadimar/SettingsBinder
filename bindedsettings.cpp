@@ -63,7 +63,10 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     }
     return true;
 }
-
+bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName, IntType type){
+    setIntTypePropertyTo(targetWt, type);
+    bindWtToProp(targetWt, propertyName);
+}
 bool BindedSettings::bindWtToProp(QSpinBox *targetWt, const char *propertyName)
 {
     QSpinBox* sb = targetWt;
@@ -385,13 +388,14 @@ void BindedSettings::save()
            qsets.setValue(strFromChars(metaProp.name()), QVariant(metaProp.read(this)).toInt());
            continue;
        }
-       qsets.setValue(strFromChars(metaProp.name()), metaProp.read(this));
+       qsets.setValue(strFromChars(metaProp.name()), QVariant::fromValue(metaProp.read(this)));
     }
     qsets.endGroup();
 }
 
 void BindedSettings::load()
 {
+    if (debugBs) qDebug()<<Q_FUNC_INFO;
     QStringList propNames = collectPropsNames(this);
     QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
@@ -400,7 +404,7 @@ void BindedSettings::load()
         QMetaProperty metaProp = metaObject()->property(metaObject()->indexOfProperty(charsFromStr(propName)));
         if (debugBs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(this)<<metaProp.isEnumType();
         QVariant value = qsets.value(propName);
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
+        if (debugBs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value<<propName;
         if (metaProp.isEnumType()){
             if (debugBs) qDebug()<<Q_FUNC_INFO<<" trying to load enumType property";
             if (debugBs){

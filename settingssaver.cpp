@@ -23,7 +23,7 @@ void SettingsSaver::save(QObject* target, QString extraGroupKey)
            qsets.setValue(strFromChars(metaProp.name()), QVariant(metaProp.read(target)).toInt());
            continue;
        }
-       qsets.setValue(strFromChars(metaProp.name()), metaProp.read(target));
+       qsets.setValue(strFromChars(metaProp.name()), QVariant::fromValue(metaProp.read(target)));
     }
     qsets.endGroup();
 }

@@ -23,7 +23,7 @@ public:
         const QMetaObject* metaObject = obj->metaObject();
         QStringList properties;
         for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i)
-            properties << strFromChars(metaObject->property(i).name());
+            properties   << strFromChars(metaObject->property(i).name());
         return properties;
     }
     static QString strFromChars(const char* array){

@@ -27,8 +27,12 @@ public:
         notInt = 10
     };
     Q_ENUM(IntType)
-    BindedSettings(QObject* parent = nullptr);
+    explicit BindedSettings(QObject* parent = nullptr);
+    virtual ~BindedSettings(){}
+    void save();
+    void load();
     bool bindWtToProp(QLineEdit* targetWt, const char* propertyName);
+    bool bindWtToProp(QLineEdit* targetWt, const char* propertyName, IntType type);
     bool bindWtToProp(QSpinBox* targetWt, const char* propertyName);
     bool bindWtToProp(QDoubleSpinBox* targetWt, const char* propertyName);
     bool bindWtToProp(QCheckBox* targetWt, const char* propertyName);
@@ -142,7 +146,8 @@ public:
     QMap<QString, ReaderStruct> bindedMap;
 public slots:
     void invokeReader();
-private:
+protected:
+
     bool checkSupportedTypes(QLineEdit* obj, const char* propertyName);
     bool checkSupportedTypes(QCheckBox* obj, const char* propertyName);
     bool checkSupportedTypes(QSpinBox* obj, const char* propertyName);
@@ -156,15 +161,16 @@ private:
     QList<QMetaType::Type> supportedGroupButtonsTypes;
     QList<QMetaType::Type> supportedSpinBoxTypes;
     QList<QMetaType::Type> supportedDoubleSpinBoxTypes;
-public:
-    void save();
-    void load();
-    const QMetaObject* getMeta(const QObject* obj){
-        return obj->metaObject();
-    }
+
     template<class T> QVariant getVariantEnumClass(int n){                  //TODO add check for registered T
           return QVariant::fromValue<T>(static_cast<T>(n));
     }
+
+private:
+    const QMetaObject* getMeta(const QObject* obj){
+        return obj->metaObject();
+    }
+
     const QStringList collectPropsNames(const QObject* obj){
         const QMetaObject* metaObject = obj->metaObject();
         QStringList properties;
