@@ -15,6 +15,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     QLineEdit* le = targetWt;
     //getting metaproperty
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    if (debugBs) qDebug() << metaObject()->indexOfProperty(propertyName);
     if (!mp.isStored(this)){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;
@@ -108,6 +109,7 @@ bool BindedSettings::bindWtToProp(QDoubleSpinBox *targetWt, const char *property
 {
     QDoubleSpinBox* dsb = targetWt;
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+
     if (!mp.isStored(this)){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;

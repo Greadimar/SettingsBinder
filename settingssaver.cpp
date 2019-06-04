@@ -7,12 +7,22 @@ SettingsSaver::SettingsSaver(QObject *parent) : QObject(parent)
 
 void SettingsSaver::save(QObject* target, QString extraGroupKey)
 {
+    save(target, QDir::currentPath(), extraGroupKey);
+}
+
+void SettingsSaver::load(QObject *target, QString extraGroupKey)
+{
+    load(target, QDir::currentPath(), extraGroupKey);
+}
+
+void SettingsSaver::save(QObject *target, QString path, QString extraGroupKey)
+{
     this->target = target;
     const QMetaObject* metaTarget = getMeta(target);
     propertiesList = collectPropsNames(target);
 
     if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
-    QString setsName(QDir::currentPath() + "/autosettings.ini");
+    QString setsName(path + "/autosettings.ini");
     QSettings qsets(setsName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
@@ -28,14 +38,14 @@ void SettingsSaver::save(QObject* target, QString extraGroupKey)
     qsets.endGroup();
 }
 
-void SettingsSaver::load(QObject *target, QString extraGroupKey)
+void SettingsSaver::load(QObject *target, QString path, QString extraGroupKey)
 {
     this->target = target;
     const QMetaObject* metaTarget = getMeta(target);
     propertiesList = collectPropsNames(target);
     if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
-    QString setsName(QDir::currentPath() + "/autosettings.ini");
+    QString setsName(path + "/autosettings.ini");
     QSettings qsets(setsName, QSettings::IniFormat);
     qsets.beginGroup(QString::fromLocal8Bit("Settings_")+QString::fromLocal8Bit(metaTarget->className()) + extraGroupKey);
     qDebug()<<propNames.size();
