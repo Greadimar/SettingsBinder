@@ -7,15 +7,15 @@ SettingsSaver::SettingsSaver(QObject *parent) : QObject(parent)
 
 void SettingsSaver::save(QObject* target, QString extraGroupKey)
 {
-    save(target, QDir::currentPath(), extraGroupKey);
+    saveWithPath(target, QDir::currentPath(), extraGroupKey);
 }
 
 void SettingsSaver::load(QObject *target, QString extraGroupKey)
 {
-    load(target, QDir::currentPath(), extraGroupKey);
+    loadFromPath(target, QDir::currentPath(), extraGroupKey);
 }
 
-void SettingsSaver::save(QObject *target, QString path, QString extraGroupKey)
+void SettingsSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
 {
     this->target = target;
     const QMetaObject* metaTarget = getMeta(target);
@@ -38,7 +38,7 @@ void SettingsSaver::save(QObject *target, QString path, QString extraGroupKey)
     qsets.endGroup();
 }
 
-void SettingsSaver::load(QObject *target, QString path, QString extraGroupKey)
+void SettingsSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
 {
     this->target = target;
     const QMetaObject* metaTarget = getMeta(target);

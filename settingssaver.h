@@ -10,14 +10,13 @@ class SettingsSaver: public QObject
 {
     Q_OBJECT
 public:
-     SettingsSaver(QObject *parent);
-        ~SettingsSaver(){
-    }
+    SettingsSaver(QObject *parent = nullptr);
+    ~SettingsSaver(){}
     QObject* target;
     void save(QObject *target, QString extraGroupKey = "");
     void load(QObject *target, QString extraGroupKey = "");
-    void save(QObject *target, QString path = , QString extraGroupKey = "");
-    void load(QObject *target, QString path, QString extraGroupKey = "");
+    void saveWithPath(QObject *target, QString path, QString extraGroupKey = "");
+    void loadFromPath(QObject *target, QString path, QString extraGroupKey = "");
     const QMetaObject* getMeta(QObject* obj){
         return obj->metaObject();
     }
