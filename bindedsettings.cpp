@@ -407,8 +407,12 @@ void BindedSettings::load()
     QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
     qsets.beginGroup("Settings");
+    if (debugBs) qDebug()<<Q_FUNC_INFO<<((metaObject() == nullptr)? "not meta": "metaExists");
+    if (debugBs) qDebug()<<Q_FUNC_INFO<<"propertyCount"<<metaObject()->propertyCount();
     for (QString& propName: propNames){
-        QMetaProperty metaProp = metaObject()->property(metaObject()->indexOfProperty(charsFromStr(propName)));
+        qDebug() << propName.data() << propName.toLocal8Bit().data();
+        if (debugBs) qDebug()<<Q_FUNC_INFO<<"propName, index of Prop" << propName << metaObject()->indexOfProperty(propName.toLocal8Bit().data());
+        QMetaProperty metaProp = metaObject()->property(metaObject()->indexOfProperty(propName.toLocal8Bit().data()));
         if (debugBs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(this)<<metaProp.isEnumType();
         QVariant value = qsets.value(propName);
         if (debugBs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value<<propName;
@@ -420,10 +424,9 @@ void BindedSettings::load()
                     qDebug()<<Q_FUNC_INFO<<"method: "<<QString::number(j)<<" with name: "<<metaObject()->method(j).name();
                 }
             }
-            QString methodName(propName + "Variant");
+            QString methodName(propName + "Variant" + "(int)");
             if (debugBs) qDebug()<<Q_FUNC_INFO<<" what am i invoking:"<<methodName;
-            int idxOfMethod = metaObject()->indexOfMethod(QMetaObject::normalizedSignature(
-                                                              charsFromStr(methodName + "(int)")));
+            int idxOfMethod = metaObject()->indexOfMethod(QMetaObject::normalizedSignature(methodName.toLocal8Bit().data()));
             if (debugBs) qDebug()<<Q_FUNC_INFO<<" idx of found method"<< idxOfMethod;
             QMetaMethod mm = metaObject()->method(idxOfMethod);
             QVariant enumClassVar;                                                                          //this is where we get result variant from invoking getVariant

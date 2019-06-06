@@ -181,9 +181,6 @@ private:
     static QString strFromChars(const char* array){
         return QString::fromUtf8(array);
     }
-    static char* charsFromStr(const QString& str){
-        return QByteArray(str.toLocal8Bit()).data();
-    }
 
     const QStringList propertiesList;
 

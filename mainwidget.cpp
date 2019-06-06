@@ -28,6 +28,7 @@ MainWidget::MainWidget(QWidget *parent) :
     settings->bindWtToProp(ui->leDouble, "doubleForLe");    //TODO setDoublePrecisionProperty or not;
     settings->bindWtToProp(ui->sbInt, "intForSb");
     settings->bindWtToProp(ui->dsbDouble, "doubleForDsb");
+    settings->bindWtToProp(ui->chb, "boolForChb");
 
     //unite radiobuttongs into QButtonGroup;
     btngrpStates = new QButtonGroup();
@@ -38,6 +39,11 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->cbInt->addItem("intForLe", settings->intForLe());
     ui->cbInt->addItem("doubleForLe", settings->doubleForLe());
     settings->bindWtToProp(ui->cbInt, "intForCb");
+
+
+
+
+
 }
 
 MainWidget::~MainWidget()
