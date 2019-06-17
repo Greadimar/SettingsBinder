@@ -48,68 +48,8 @@ public:
     bool bindWtToProp(QDoubleSpinBox* targetWt, const char* propertyName);
     bool bindWtToProp(QCheckBox* targetWt, const char* propertyName);
     bool bindWtToProp(QComboBox* targetWt, const char* propertyName);
-    template <typename Tenumclass> bool bindButtonGroupAsEnum(QButtonGroup* targetBtnGrp, const char* propertyName){
-        // T ENUM CLASS SHOULD BE REGISTERED IN Q_DECLARE_METATYPE;
-        // BUTTONS IN GROUP SHOULD HAVE SAME ID as casted ENUM CLASS VALUE
-        QButtonGroup* btnGrp = targetBtnGrp;
-        QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    bool bindWtToProp(QButtonGroup* targetWt, const char* propertyName);
 
-        if (!mp.isStored(this)){
-            qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetBtnGrp->metaObject()->className()<<" to "<<propertyName << " - no property found";
-            return false;
-        }
-        if (!checkSupportedTypes(btnGrp, propertyName)){
-            qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetBtnGrp->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
-            return false;
-        }
-        auto reader = [=](QObject* obj)->bool{
-            QButtonGroup* group = qobject_cast<QButtonGroup*>(obj);
-            int id;
-            if (mp.isEnumType()){
-                id = static_cast<int>(mp.read(this).value<Tenumclass>());
-            }
-            else if (mp.type() == QVariant::Int){
-                id = mp.read(this).toInt();
-            }
-            else {
-                return false;
-            }
-            if (id < group->buttons().size()){
-                group->button(id)->setChecked(true);
-                return true;
-            }
-            return false;
-        };
-        reader(btnGrp);
-        bindedMap.insert(QString::fromUtf8(propertyName), ReaderStruct(btnGrp,reader));
-        QMetaMethod signal = mp.notifySignal();
-        QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("invokeReader()"));
-        connect(this, signal, this, slot);
-        if (mp.isWritable()){
-            connect(btnGrp, qOverload<int>(&QButtonGroup::buttonClicked), this, [=](){
-                if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QBtnGroup changing property";
-                QVariant var;
-                if (mp.isEnumType()){
-                    var = QVariant::fromValue<Tenumclass>(static_cast<Tenumclass>(btnGrp->checkedId()));
-                    //var = QVariant(btnGrp->checkedId());
-                }
-                else if(mp.type() == QVariant::Type::Int){
-                    var = QVariant(btnGrp->checkedId());
-                }
-                else{
-                    return;
-                }
-                mp.write(this, var);
-                if (debugBs) qDebug()<<Q_FUNC_INFO<<" written grp state"<<mp.read(this);
-
-            });
-        }
-        else{
-            qDebug()<<Q_FUNC_INFO<<": can't bind writing "<<targetBtnGrp->metaObject()->className()<<" to "<<propertyName << " - property is not writable";
-        }
-        return true;
-    }
-    template <class test> void lol(){}
     template <typename Tval>bool stringTo(const QString& val, Tval& result, IntType type = IntType::notInt){
         bool isOk{false};
         if (std::is_same<Tval, uint>::value){

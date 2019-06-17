@@ -190,10 +190,26 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
         return false;
     }
+    if (mp.isEnumType()){
+        QMetaEnum me = mp.enumerator();
+        for (int i = 0; i < me.keyCount(); i++){
+            const char* s = me.key(i);
+            QString name = strFromChars(s);
+            cb->insertItem(i, name);
+        }
+    }
     auto reader = [=](QObject* obj)->bool{
         QComboBox* target = qobject_cast<QComboBox*>(obj);
         if (target == nullptr) return false;
+        if (mp.isEnumType()){
+            QMetaEnum me = mp.enumerator();
+            QString str = strFromChars(me.key(mp.read(this).toInt()));
+            target->setCurrentText(str);
+            return true;
+        }
         if (mp.type() == QVariant::Int){
+            QVariant v = mp.read(this);
+            int id = v.toInt();
             target->setCurrentIndex(mp.read(this).toInt());
             return true;
         }
@@ -204,6 +220,7 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
         if (mp.type() == QVariant::String){
             target->setCurrentText(mp.read(this).toString());
         }
+
         return true;
     };
     reader(cb);
@@ -215,7 +232,10 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
         connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), this, [=](){
             if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
             QVariant var;
-            if (mp.type() == QVariant::Int){
+            if (mp.isEnumType()){
+                var = QVariant(cb->currentText());
+            }
+            else if (mp.type() == QVariant::Int){
                 var = QVariant(cb->currentIndex());
             }
             else if (mp.type() == QVariant::String){
@@ -224,6 +244,7 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
             else if (mp.type() == QVariant::UInt){
                 var = QVariant(cb->currentText());
             }
+
             mp.write(this, var);
         });
     }
@@ -234,6 +255,64 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
     return true;
 }
 
+bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyName)
+{
+    QButtonGroup* btnGrp = targetWt;
+    QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    if (!mp.isStored(this)){
+        qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
+        return false;
+    }
+    if (!checkSupportedTypes(btnGrp, propertyName)){
+        qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
+        return false;
+    }
+
+    auto reader = [=](QObject* target)->bool{
+        QButtonGroup* bg = qobject_cast<QButtonGroup*>(target);
+        if (bg == nullptr) return false;
+        if (mp.type() == QVariant::Int || mp.type() == QVariant::UInt) {
+            int idx = mp.read(this).toInt();
+            if (idx >= bg->buttons().size() || idx < 0){
+                qWarning()<<Q_FUNC_INFO<<": can't read value, idx is bigger than count of buttons or < 0";
+                return false;
+            }
+            bg->buttons()[idx]->setChecked(true);
+            return true;
+        }
+        return true;
+    };
+    reader(btnGrp);
+    bindedMap.insert(QString::fromUtf8(propertyName), ReaderStruct(btnGrp,reader));
+    QMetaMethod signal = mp.notifySignal();
+    QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("invokeReader()"));
+    connect(this, signal, this, slot);
+    if (mp.isWritable()){
+        connect(btnGrp, qOverload<int>(&QButtonGroup::buttonClicked), this, [=](){
+            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
+            QVariant var;
+            if (mp.isEnumType()){
+                QMetaEnum me = mp.enumerator();
+                QString str = strFromChars(me.key(btnGrp->checkedId()));
+                var = QVariant(str);
+            }
+            else if (mp.type() == QVariant::Int){
+                var = QVariant(btnGrp->checkedId());
+            }
+
+            else if (mp.type() == QVariant::UInt){
+                var = QVariant(btnGrp->checkedId());
+            }
+
+            mp.write(this, var);
+        });
+    }
+    else{
+        qDebug()<<Q_FUNC_INFO<<": can't bind writing "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - property is not writable";
+    }
+
+    return true;
+}
 
 
 bool BindedSettings::stringToVariant(const QString &val, QVariant &result, IntType type)
@@ -349,8 +428,7 @@ bool BindedSettings::checkSupportedTypes(QButtonGroup *obj, const char *property
     if (obj == nullptr) return false;
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
     QMetaType::Type t = static_cast<QMetaType::Type>(mp.type());
-    if (QMetaType::isRegistered(t)) return true;
-    if (supportedGroupButtonsTypes.contains(t)) return true;
+    if (QMetaType::isRegistered(t) && supportedGroupButtonsTypes.contains(t)) return true;
     return false;
 }
 
@@ -469,4 +547,6 @@ void BindedSettings::load()
     qsets.endGroup();
     */
 }
+
+
 
