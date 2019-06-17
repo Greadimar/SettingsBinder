@@ -40,10 +40,6 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->cbInt->addItem("doubleForLe", settings->doubleForLe());
     settings->bindWtToProp(ui->cbInt, "intForCb");
 
-
-
-
-
 }
 
 MainWidget::~MainWidget()

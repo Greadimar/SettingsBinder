@@ -1,14 +1,13 @@
 #include "bindedsettings.h"
 
-BindedSettings::BindedSettings(QObject *parent): QObject(parent){
-    supportedLineEditTypes << QMetaType::Type(QMetaType::QString) << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::UInt) << QMetaType::Type(QMetaType::Double)<<
-                              QMetaType::Type(QMetaType::Short) << QMetaType::Type(QMetaType::UShort) << QMetaType::Type(QMetaType::Long);
-    supportedCheckBoxTypes << QMetaType::Type(QMetaType::Bool);
-    supportedComboBoxTypes << QMetaType::Type(QMetaType::QString) << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::UInt);
-    supportedSpinBoxTypes << QMetaType::Type(QMetaType::Int);
-    supportedDoubleSpinBoxTypes << QMetaType::Type(QMetaType::Double);
-    supportedGroupButtonsTypes << QMetaType::Type(QMetaType::Int);
+
+
+BindedSettings::BindedSettings(QObject *parent): QObject(parent)
+{
+    fillSupportedLits();
 }
+
+
 
 bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
 {
@@ -363,6 +362,18 @@ bool BindedSettings::checkSupportedTypes(QComboBox *obj, const char *propertyNam
     return false;
 }
 
+void BindedSettings::fillSupportedLits()
+{
+    supportedLineEditTypes << QMetaType::Type(QMetaType::QString) << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::UInt) << QMetaType::Type(QMetaType::Double)<<
+                              QMetaType::Type(QMetaType::Short) << QMetaType::Type(QMetaType::UShort) << QMetaType::Type(QMetaType::Long);
+    supportedCheckBoxTypes << QMetaType::Type(QMetaType::Bool);
+    supportedComboBoxTypes << QMetaType::Type(QMetaType::QString) << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::UInt);
+    supportedSpinBoxTypes << QMetaType::Type(QMetaType::Int);
+    supportedDoubleSpinBoxTypes << QMetaType::Type(QMetaType::Double);
+    supportedGroupButtonsTypes << QMetaType::Type(QMetaType::Int);
+
+}
+
 void BindedSettings::invokeReader()
 {
     int signalIdx = QObject::senderSignalIndex();
@@ -381,8 +392,13 @@ void BindedSettings::invokeReader()
 }
 
 
+
 void BindedSettings::save()
 {
+    if (debugBs) qDebug()<<Q_FUNC_INFO;
+    SettingsSaver ss;
+    ss.save(this);
+    /*
     if (debugBs) qDebug()<< Q_FUNC_INFO << " saving properties";
     QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
@@ -397,12 +413,16 @@ void BindedSettings::save()
        }
        qsets.setValue(strFromChars(metaProp.name()), QVariant::fromValue(metaProp.read(this)));
     }
-    qsets.endGroup();
+    qsets.endGroup();*/
 }
 
 void BindedSettings::load()
 {
     if (debugBs) qDebug()<<Q_FUNC_INFO;
+    SettingsSaver ss;
+    ss.load(this);
+
+    /*
     QStringList propNames = collectPropsNames(this);
     QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
@@ -447,4 +467,6 @@ void BindedSettings::load()
         if (debugBs) qDebug()<<Q_FUNC_INFO<<" signal emitted: "<<emitted;
     }
     qsets.endGroup();
+    */
 }
+

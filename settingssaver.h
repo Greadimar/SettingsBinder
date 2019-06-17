@@ -12,7 +12,6 @@ class SettingsSaver: public QObject
 public:
     SettingsSaver(QObject *parent = nullptr);
     ~SettingsSaver(){}
-    QObject* target;
     void save(QObject *target, QString extraGroupKey = "");
     void load(QObject *target, QString extraGroupKey = "");
     void saveWithPath(QObject *target, QString path, QString extraGroupKey = "");
@@ -29,9 +28,6 @@ public:
     }
     static QString strFromChars(const char* array){
         return QString::fromUtf8(array);
-    }
-    static char* charsFromStr(const QString& str){
-        return QByteArray(str.toLocal8Bit()).data();
     }
 
     QStringList propertiesList;

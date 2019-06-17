@@ -1,8 +1,7 @@
 #include "settings.h"
 
-Settings::Settings(QObject *parent): BindedSettings(parent)
+Settings::Settings(QObject *parent): BindedSettings(this, parent)
 {
-
 }
 
 QString Settings::stringForLe() const

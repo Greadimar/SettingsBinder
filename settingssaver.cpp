@@ -17,16 +17,15 @@ void SettingsSaver::load(QObject *target, QString extraGroupKey)
 
 void SettingsSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
 {
-    this->target = target;
     const QMetaObject* metaTarget = getMeta(target);
     propertiesList = collectPropsNames(target);
 
     if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
-    QString setsName(path + "/autosettings.ini");
+    QString setsName(path + "/" +QString::fromUtf8(metaTarget->className()) + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
-    qsets.beginGroup(QString::fromLocal8Bit("Settings_")+QString::fromLocal8Bit(metaTarget->className()) + extraGroupKey);
+    qsets.beginGroup(QString::fromLocal8Bit("Settings_") + extraGroupKey);
     for (int i = offset; i < end; i++){
        QMetaProperty metaProp = metaTarget->property(i);
        if (metaProp.isEnumType()){
@@ -40,17 +39,15 @@ void SettingsSaver::saveWithPath(QObject *target, QString path, QString extraGro
 
 void SettingsSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
 {
-    this->target = target;
     const QMetaObject* metaTarget = getMeta(target);
     propertiesList = collectPropsNames(target);
     if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
-    QString setsName(path + "/autosettings.ini");
+    QString setsName(path + "/" +metaTarget->className() + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
-    qsets.beginGroup(QString::fromLocal8Bit("Settings_")+QString::fromLocal8Bit(metaTarget->className()) + extraGroupKey);
-    qDebug()<<propNames.size();
+    qsets.beginGroup(QString::fromLocal8Bit("Settings_")+ extraGroupKey);
     for (QString& propName: propNames){
-        QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(charsFromStr(propName)));
+        QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(propName.toLocal8Bit().data()));
         if (debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
         QVariant value = qsets.value(propName);
         if (debugSs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
@@ -62,10 +59,9 @@ void SettingsSaver::loadFromPath(QObject *target, QString path, QString extraGro
                     qDebug()<<Q_FUNC_INFO<<"method: "<<QString::number(j)<<" with name: "<<metaTarget->method(j).name();
                 }
             }
-            QString methodName(propName + "Variant");
+            QString methodName(propName + "Variant(int)");
             if (debugSs) qDebug()<<Q_FUNC_INFO<<" what am i invoking:"<<methodName;
-            int idxOfMethod = metaTarget->indexOfMethod(QMetaObject::normalizedSignature(
-                                                              charsFromStr(methodName + "(int)")));
+            int idxOfMethod = metaTarget->indexOfMethod(QMetaObject::normalizedSignature(methodName.toLocal8Bit().data()));
             if (debugSs) qDebug()<<Q_FUNC_INFO<<" idx of found method"<< idxOfMethod;
             QMetaMethod mm = metaTarget->method(idxOfMethod);
             QVariant enumClassVar;                                                                          //this is where we get result variant from invoking getVariant
