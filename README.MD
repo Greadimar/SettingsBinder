@@ -27,7 +27,9 @@
 		 //функция getter (возвращающая m_stringForLe)
 		QString stringForLe() const;
 		//функция setter (устанавливает m_stringForLe)
-		void setStringForLe(const QString &stringForLe 
+		void setStringForLe(const QString &stringForLe)
+	signals:
+		void stringForLeChanged(); 
 	private:
 		//переменная
 		QString m_stringForLe;				
@@ -75,7 +77,7 @@ private:
 	btngrpStates->addButton(ui->radioButton_2, static_cast<int>(Settings::States::state1);          
 	btngrpStates->addButton(ui->radioButton_3, static_cast<int>(Settings::States::state2);    
 	//первый аргумент - виджет, второй - значение из Q_PROPERTY				
-	settings->bindButtonGroupAsEnum<Settings::States>(btngrpStates, "stateForGrpb");			
+	settings->bindWtToProp(btngrpStates, "stateForGrpb");			
 </code></pre>
 
 8. Сохранение и загрузку данных осуществлять через save() и load() унаследованного от BindedSettings класса
@@ -94,8 +96,9 @@ private:
 
 # Поддерживаемые привязки на текущий момент:
 	QLineEdit - QString / uint (decimal) / uint (hex) / int / short / long / double 
-	QComboBox - int
+	QComboBox - int/ enumclass
 	QSpinBox - int / uint
 	QDoubleSpinBox - double
 	QCheckBox - bool
-	QGroupButton - enum class
+	QGroupButton - enum class / int
+	
