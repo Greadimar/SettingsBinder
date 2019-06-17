@@ -18,11 +18,6 @@
 #include "settingssaver.h"
 constexpr bool debugBs{false};
 
-template<class DerivedT>
-struct thisWrapper {
-    typedef DerivedT type;
-    DerivedT* value;
-};
 class BindedSettings: public QObject
 {
     Q_OBJECT
@@ -35,10 +30,6 @@ public:
     };
     Q_ENUM(IntType)
     explicit BindedSettings(QObject* parent = nullptr);
-    template <class T> explicit BindedSettings(T* derived, QObject* parent = nullptr): QObject(parent){
-        fillSupportedLits();
-        derived->load();
-    }
     virtual ~BindedSettings(){}
     void save();
     void load();
