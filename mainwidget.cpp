@@ -28,8 +28,9 @@ MainWidget::MainWidget(QWidget *parent) :
     settings->bindWtToProp(ui->sbInt, "intForSb");
     settings->bindWtToProp(ui->dsbDouble, "doubleForDsb");
     settings->bindWtToProp(ui->chb, "boolForChb");
-    settings->bindWtToProp(ui->cbInt, "intForCb");
     ui->cbInt->addItems({"first", "second", "third"});
+    settings->bindWtToProp(ui->cbInt, "intForCb");
+
     //unite radiobuttongs into QButtonGroup;
     btngrpStates = new QButtonGroup();
     btngrpStates->addButton(ui->radioButton, 0);            //index should be the same as interpreted enum class value
