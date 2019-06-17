@@ -55,17 +55,20 @@ public:
 	};
 	//Обязательно регистрируем наш класс в Q_ENUM
 	Q_ENUM(States)											
-	Q_PROPERTY(States stateForGrpb READ stateForGrpb WRITE setStateForGrpb NOTIFY stateForGrpbChanged)
-	//функция getter (возвращающая state)
-	Settings::States stateForGrpb() const;		
-	//функция setter (устанавливает state)
-	void setStateForGrpb(const States &stateForGrpb);		
-	//обязательная функция для преобразования в QVariant
-	Q_INVOKABLE QVariant stateForGrpbVariant(int val){		
-		return getVariantEnumClass<States>(val);
+}
+</code></pre>
+или, если переменная создана в namespace:
+<pre><code>
+namespace SomeNamespace{
+	Q_NAMESPACE
+	enum class wowState{
+		wow = 0,
+		awesome = 1,
+		so_cute = 2			
 	}
-private:
-	State m_state;	//переменная
+	Q_ENUM_NS(wowState)
+	
+}
 </code></pre>
 
 7. В классе интерфейса привязать QButtonGroup к переменной enum class
