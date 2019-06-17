@@ -208,8 +208,6 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
             return true;
         }
         if (mp.type() == QVariant::Int){
-            QVariant v = mp.read(this);
-            int id = v.toInt();
             target->setCurrentIndex(mp.read(this).toInt());
             return true;
         }
