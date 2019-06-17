@@ -20,20 +20,10 @@
       <string>Остальное</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="chb">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Value</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cbInt"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>int - QComboBox</string>
+         <string>bool - QCheckBox</string>
         </property>
        </widget>
       </item>
@@ -50,17 +40,27 @@
       <item row="2" column="1">
        <widget class="QSpinBox" name="sbInt"/>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>bool - QCheckBox</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
          <string>int - QSpinBox</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="chb">
+        <property name="text">
+         <string>Value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cbInt"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>int - QComboBox</string>
         </property>
        </widget>
       </item>
@@ -80,6 +80,16 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="cbEnum"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>enum class - QGroupButton</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QRadioButton" name="radioButton">
         <property name="text">
@@ -94,10 +104,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_15">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>enum class - QGroupButton</string>
+         <string>enum - QComboBox</string>
         </property>
        </widget>
       </item>
@@ -209,13 +219,6 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>enum - QComboBox</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="2">
        <widget class="QTimeEdit" name="timeEdit_2"/>
       </item>
@@ -256,9 +259,6 @@
          </attribute>
         </widget>
        </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QComboBox" name="comboBox_2"/>
       </item>
       <item row="6" column="2">
        <widget class="QToolButton" name="toolButton">

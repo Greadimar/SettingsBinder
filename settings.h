@@ -3,7 +3,16 @@
 #include "bindedsettings.h"
 
 //Q_ENUM(States)
-
+namespace SomeNamespace {
+    Q_NAMESPACE
+    enum class NsEnumState
+    {
+        nsState0 = 0,
+        nsState1 = 1,
+        nsState2 = 2
+    };
+    Q_ENUM_NS(NsEnumState)
+};
 class Settings: public BindedSettings
 {
     Q_OBJECT
@@ -28,6 +37,7 @@ public:
     Q_PROPERTY(bool boolForChb READ boolForChb WRITE setBoolForChb NOTIFY boolForChbChanged)
     Q_PROPERTY(int intForCb READ intForCb WRITE setIntForCb NOTIFY intForCbChanged)
     Q_PROPERTY(States stateForGrpb READ stateForGrpb WRITE setStateForGrpb NOTIFY stateForGrpbChanged)
+    Q_PROPERTY(SomeNamespace::NsEnumState stateForCb READ stateForCb WRITE setStateForCb NOTIFY stateForCbChanged)
 
     QString stringForLe() const;
     void setStringForLe(const QString &stringForLe);
@@ -67,6 +77,9 @@ public:
     Q_INVOKABLE QVariant stateForGrpbVariant(int val){
         return getVariantEnumClass<States>(val);
     }
+    SomeNamespace::NsEnumState stateForCb() const;
+    void setStateForCb(const SomeNamespace::NsEnumState &stateForCb);
+
 signals:
     void stringForLeChanged();
     void intForLeChanged();
@@ -80,6 +93,7 @@ signals:
     void boolForChbChanged();
     void intForCbChanged();
     void stateForGrpbChanged();
+    void stateForCbChanged();
 
 private:
     QString m_stringForLe{"defaultText"};
@@ -95,6 +109,7 @@ private:
     bool m_boolForChb{true};
     int m_intForCb{0};
     States m_stateForGrpb{States::state0};
+    SomeNamespace::NsEnumState m_stateForCb{SomeNamespace::NsEnumState::nsState1};
 };
 
 #endif // SETTINGS_H

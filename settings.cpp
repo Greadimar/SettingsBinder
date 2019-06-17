@@ -124,6 +124,16 @@ void Settings::setStateForGrpb(const States &stateForGrpb)
     m_stateForGrpb = stateForGrpb;
 }
 
+SomeNamespace::NsEnumState Settings::stateForCb() const
+{
+    return m_stateForCb;
+}
+
+void Settings::setStateForCb(const SomeNamespace::NsEnumState &stateForCb)
+{
+    m_stateForCb = stateForCb;
+}
+
 
 
 //void Settings::setStateForGrpb(int stateInt)

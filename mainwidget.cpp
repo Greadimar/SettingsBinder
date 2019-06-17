@@ -22,23 +22,22 @@ MainWidget::MainWidget(QWidget *parent) :
     settings->bindWtToProp(ui->leShort, "shortForLe");
 
     //if int value is Hex, use method:
-    settings->setIntTypePropertyTo(ui->leUintHex, Settings::IntType::hex);
-    settings->bindWtToProp(ui->leUintHex, "hexedUintForLe");
+    settings->bindWtToProp(ui->leUintHex, "hexedUintForLe", Settings::IntType::hex);
     settings->bindWtToProp(ui->leLong, "longForLe");
     settings->bindWtToProp(ui->leDouble, "doubleForLe");    //TODO setDoublePrecisionProperty or not;
     settings->bindWtToProp(ui->sbInt, "intForSb");
     settings->bindWtToProp(ui->dsbDouble, "doubleForDsb");
     settings->bindWtToProp(ui->chb, "boolForChb");
-
+    settings->bindWtToProp(ui->cbInt, "intForCb");
+    ui->cbInt->addItems({"first", "second", "third"});
     //unite radiobuttongs into QButtonGroup;
     btngrpStates = new QButtonGroup();
     btngrpStates->addButton(ui->radioButton, 0);            //index should be the same as interpreted enum class value
     btngrpStates->addButton(ui->radioButton_2, 1);          //or just add it in the proper consequence
     btngrpStates->addButton(ui->radioButton_3, 2);          //or instead is int use static_cast<int>(enum class value);
-    settings->bindButtonGroupAsEnum<Settings::States>(btngrpStates, "stateForGrpb");
-    ui->cbInt->addItem("intForLe", settings->intForLe());
-    ui->cbInt->addItem("doubleForLe", settings->doubleForLe());
-    settings->bindWtToProp(ui->cbInt, "intForCb");
+
+    settings->bindWtToProp(btngrpStates, "stateForGrpb");
+    settings->bindWtToProp(ui->cbEnum, "stateForCb");
 
 }
 

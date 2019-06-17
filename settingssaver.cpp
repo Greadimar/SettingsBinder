@@ -29,7 +29,9 @@ void SettingsSaver::saveWithPath(QObject *target, QString path, QString extraGro
     for (int i = offset; i < end; i++){
        QMetaProperty metaProp = metaTarget->property(i);
        if (metaProp.isEnumType()){
-           qsets.setValue(strFromChars(metaProp.name()), QVariant(metaProp.read(target)).toInt());
+           QMetaEnum me = metaProp.enumerator();
+           QString str = strFromChars(me.key(metaProp.read(target).toInt()));
+           qsets.setValue(strFromChars(metaProp.name()), str);
            continue;
        }
        qsets.setValue(strFromChars(metaProp.name()), QVariant::fromValue(metaProp.read(target)));
@@ -51,30 +53,8 @@ void SettingsSaver::loadFromPath(QObject *target, QString path, QString extraGro
         if (debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
         QVariant value = qsets.value(propName);
         if (debugSs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
-        if (metaProp.isEnumType()){
-            if (debugSs) qDebug()<<Q_FUNC_INFO<<" trying to load enumType property";
-            if (debugSs){
-                qDebug()<<Q_FUNC_INFO<<" here are all methods";
-                for (int j = metaTarget->methodOffset(); j < metaTarget->methodCount(); j++){
-                    qDebug()<<Q_FUNC_INFO<<"method: "<<QString::number(j)<<" with name: "<<metaTarget->method(j).name();
-                }
-            }
-            QString methodName(propName + "Variant(int)");
-            if (debugSs) qDebug()<<Q_FUNC_INFO<<" what am i invoking:"<<methodName;
-            int idxOfMethod = metaTarget->indexOfMethod(QMetaObject::normalizedSignature(methodName.toLocal8Bit().data()));
-            if (debugSs) qDebug()<<Q_FUNC_INFO<<" idx of found method"<< idxOfMethod;
-            QMetaMethod mm = metaTarget->method(idxOfMethod);
-            QVariant enumClassVar;                                                                          //this is where we get result variant from invoking getVariant
-            bool invoked{false};
-            invoked = mm.invoke(target, Q_RETURN_ARG(QVariant, enumClassVar), Q_ARG(int, value.toInt()));
-            bool written{false};
-            metaProp.write(target, enumClassVar);
-            if (debugSs) qDebug()<<Q_FUNC_INFO<<" method is valid, is invoked, property written"<<mm.isValid() << invoked << written;
-        }
-        else{
-            if (!value.isNull()){
-                metaProp.write(target, value);
-            }
+        if (!value.isNull()){
+            metaProp.write(target, value);
         }
         QMetaMethod signal = metaProp.notifySignal();
         if (debugSs) qDebug()<<Q_FUNC_INFO<<" check loading signal: type:"<<signal.typeName() << ", is valid: "<<signal.isValid()<<", signature: " <<signal.methodSignature();
