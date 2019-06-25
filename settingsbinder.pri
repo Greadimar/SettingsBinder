@@ -1,3 +1,4 @@
+DEFINES += __SETTINGSBINDER__
 SOURCES += \
     $$PWD/bindedsettings.cpp \
     $$PWD/settingssaver.cpp
