@@ -2,7 +2,7 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
-#include "settingssaver.h"
+
 #include "settings.h"
 namespace Ui {
 class MainWidget;
@@ -20,7 +20,7 @@ private:
     Ui::MainWidget *ui;
 
     Settings* settings;
-    SettingsSaver* ss;
+
     QButtonGroup* btngrpStates;
 };
 

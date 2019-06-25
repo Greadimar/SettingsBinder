@@ -15,7 +15,7 @@
 #include <QDir>
 #include <QDebug>
 #include <functional>
-#include "settingssaver.h"
+#include "ssaver.h"
 constexpr bool debugBs{false};
 
 class BindedSettings: public QObject

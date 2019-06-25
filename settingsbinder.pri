@@ -1,7 +1,7 @@
 DEFINES += __SETTINGSBINDER__
 SOURCES += \
     $$PWD/bindedsettings.cpp \
-    $$PWD/settingssaver.cpp
+    $$PWD/ssaver.cpp
 HEADERS += \
     $$PWD/bindedsettings.h \
-    $$PWD/settingssaver.h
+    $$PWD/ssaver.h

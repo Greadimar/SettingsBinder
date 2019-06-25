@@ -1,25 +1,39 @@
-#include "settingssaver.h"
+#include "ssaver.h"
 
 
-SettingsSaver::SettingsSaver(QObject *parent) : QObject(parent)
-{
-}
-
-void SettingsSaver::save(QObject* target, QString extraGroupKey)
+void SSaver::save(QObject* target, QString extraGroupKey)
 {
     saveWithPath(target, QDir::currentPath(), extraGroupKey);
 }
 
-void SettingsSaver::load(QObject *target, QString extraGroupKey)
+void SSaver::load(QObject *target, QString extraGroupKey)
 {
     loadFromPath(target, QDir::currentPath(), extraGroupKey);
 }
+void SSaver::saveChildren(QObject* target)
+{
+    saveWithPath(target, QDir::currentPath(), target->metaObject()->className());
+    QObjectList children = target->children();
+    if (children.isEmpty()) return;
+    for (auto ch: children){
+        saveChildren(ch);
+    }
+}
 
-void SettingsSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
+void SSaver::loadChildren(QObject *target)
+{
+    loadFromPath(target, QDir::currentPath(), target->metaObject()->className());
+    QObjectList children = target->children();
+    if (children.isEmpty()) return;
+    for (auto ch: children){
+        loadChildren(ch);
+    }
+}
+
+
+void SSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
 {
     const QMetaObject* metaTarget = getMeta(target);
-    propertiesList = collectPropsNames(target);
-
     if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
     QString setsName(path + "/" +QString::fromUtf8(metaTarget->className()) + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
@@ -39,10 +53,9 @@ void SettingsSaver::saveWithPath(QObject *target, QString path, QString extraGro
     qsets.endGroup();
 }
 
-void SettingsSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
+void SSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
 {
     const QMetaObject* metaTarget = getMeta(target);
-    propertiesList = collectPropsNames(target);
     if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
     QString setsName(path + "/" +metaTarget->className() + ".ini");

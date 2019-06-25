@@ -1,11 +1,6 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include <QDebug>
-class testT
-{
-    testT(){}
-    int x =0;
-};
 
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
@@ -14,7 +9,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
 
     settings = new Settings(this);
-  //  ss = new SettingsSaver(settings);             is possible also with any object with properties
+
     settings->load();
     settings->bindWtToProp(ui->leString, "stringForLe");
     settings->bindWtToProp(ui->leInt, "intForLe");

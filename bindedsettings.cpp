@@ -472,8 +472,7 @@ void BindedSettings::invokeReader()
 void BindedSettings::save()
 {
     if (debugBs) qDebug()<<Q_FUNC_INFO;
-    SettingsSaver ss;
-    ss.save(this);
+    SSaver::save(this);
     /*
     if (debugBs) qDebug()<< Q_FUNC_INFO << " saving properties";
     QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
@@ -495,9 +494,7 @@ void BindedSettings::save()
 void BindedSettings::load()
 {
     if (debugBs) qDebug()<<Q_FUNC_INFO;
-    SettingsSaver ss;
-    ss.load(this);
-
+    SSaver::load(this);
     /*
     QStringList propNames = collectPropsNames(this);
     QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");

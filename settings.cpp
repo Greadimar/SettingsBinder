@@ -1,6 +1,6 @@
 #include "settings.h"
 
-Settings::Settings(QObject *parent): BindedSettings(this, parent)
+Settings::Settings(QObject *parent): BindedSettings(parent)
 {
 }
 
