@@ -7,9 +7,9 @@ namespace SomeNamespace {
     Q_NAMESPACE
     enum class NsEnumState
     {
-        nsState0 = 0,
-        nsState1 = 1,
-        nsState2 = 2
+        nsState0,
+        nsState1,
+        nsState2
     };
     Q_ENUM_NS(NsEnumState)
 };

@@ -186,7 +186,8 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;
     }
-    if (!checkSupportedTypes(cb, propertyName)){
+    qDebug() << mp.isEnumType();
+    if (!checkSupportedTypes(cb, propertyName) && !mp.isEnumType()){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
         return false;
     }
