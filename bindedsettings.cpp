@@ -178,15 +178,14 @@ bool BindedSettings::bindWtToProp(QCheckBox *targetWt, const char *propertyName)
     return true;
 }
 
-bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
+bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName, WriteAlgorithm wa)
 {
     QComboBox* cb = targetWt;
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
     if (!mp.isStored(this)){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;
-    }
-    qDebug() << mp.isEnumType();
+    }  
     if (!checkSupportedTypes(cb, propertyName) && !mp.isEnumType()){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
         return false;
@@ -245,6 +244,7 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
             }
 
             mp.write(this, var);
+            if (wa == WriteAlgorithm::notifyOnWrite) signal.invoke(this);
         });
     }
     else{
@@ -254,7 +254,7 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName)
     return true;
 }
 
-bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyName)
+bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyName, WriteAlgorithm wa)
 {
     QButtonGroup* btnGrp = targetWt;
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
@@ -304,12 +304,49 @@ bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyNa
             }
 
             mp.write(this, var);
+            if (wa == WriteAlgorithm::notifyOnWrite) signal.invoke(this);
         });
     }
     else{
         qDebug()<<Q_FUNC_INFO<<": can't bind writing "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - property is not writable";
     }
 
+    return true;
+}
+
+bool BindedSettings::bindWtToProp(QLabel *targetWt, const char *propertyName)
+{
+    QLabel* lbl = targetWt;
+    QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    if (!mp.isStored(this)){
+        qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
+        return false;
+    }
+    qDebug() << mp.isEnumType();
+    if (!checkSupportedTypes(lbl, propertyName)){
+        qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
+        return false;
+    }
+    auto reader = [=](QObject* obj)->bool{
+        QLabel* target = qobject_cast<QLabel*>(obj);
+        if (target == nullptr) return false;
+        if (mp.isEnumType()){
+            QMetaEnum me = mp.enumerator();
+            QString str = strFromChars(me.key(mp.read(this).toInt()));
+            target->setText(str);
+            return true;
+        }
+        if (mp.type() == QVariant::String){
+            target->setText(mp.read(this).toString());
+        }
+
+        return true;
+    };
+    reader(lbl);
+    bindedMap.insert(QString::fromUtf8(propertyName), ReaderStruct(lbl,reader));
+    QMetaMethod signal = mp.notifySignal();
+    QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("invokeReader()"));
+    connect(this, signal, this, slot);
     return true;
 }
 
@@ -439,7 +476,16 @@ bool BindedSettings::checkSupportedTypes(QComboBox *obj, const char *propertyNam
     return false;
 }
 
-void BindedSettings::fillSupportedLits()
+bool BindedSettings::checkSupportedTypes(QLabel *obj, const char *propertyName)
+{
+    if (obj == nullptr) return false;
+     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+     QMetaType::Type t = static_cast<QMetaType::Type>(mp.type());
+     if (QMetaType::isRegistered(t) && supportedLabelsTypes.contains(t)) return true;
+     return false;
+}
+
+void BindedSettings::fillSupportedLits()    // TODO make it static!
 {
     supportedLineEditTypes << QMetaType::Type(QMetaType::QString) << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::UInt) << QMetaType::Type(QMetaType::Double)<<
                               QMetaType::Type(QMetaType::Short) << QMetaType::Type(QMetaType::UShort) << QMetaType::Type(QMetaType::Long);
@@ -448,6 +494,7 @@ void BindedSettings::fillSupportedLits()
     supportedSpinBoxTypes << QMetaType::Type(QMetaType::Int);
     supportedDoubleSpinBoxTypes << QMetaType::Type(QMetaType::Double);
     supportedGroupButtonsTypes << QMetaType::Type(QMetaType::Int);
+    supportedLabelsTypes << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::QString);
 
 }
 

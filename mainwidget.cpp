@@ -33,7 +33,8 @@ MainWidget::MainWidget(QWidget *parent) :
     btngrpStates->addButton(ui->radioButton_3, 2);          //or instead is int use static_cast<int>(enum class value);
 
     settings->bindWtToProp(btngrpStates, "stateForGrpb");
-    settings->bindWtToProp(ui->cbEnum, "stateForCb");
+    settings->bindWtToProp(ui->cbEnum, "stateForCb", BindedSettings::WriteAlgorithm::notifyOnWrite);
+    settings->bindWtToProp(ui->lblEnum, "stateForCb");
 
 }
 

@@ -12,6 +12,7 @@
 #include <QMetaMethod>
 #include <QMetaProperty>
 #include <QSettings>
+#include <QLabel>
 #include <QDir>
 #include <QDebug>
 #include <functional>
@@ -28,6 +29,11 @@ public:
         binar = 1,
         notInt = 10
     };
+    enum class WriteAlgorithm{
+        noNotifyOnWrite,
+        notifyOnWrite
+    };
+
     Q_ENUM(IntType)
     explicit BindedSettings(QObject* parent = nullptr);
     virtual ~BindedSettings(){}
@@ -38,8 +44,9 @@ public:
     bool bindWtToProp(QSpinBox* targetWt, const char* propertyName);
     bool bindWtToProp(QDoubleSpinBox* targetWt, const char* propertyName);
     bool bindWtToProp(QCheckBox* targetWt, const char* propertyName);
-    bool bindWtToProp(QComboBox* targetWt, const char* propertyName);
-    bool bindWtToProp(QButtonGroup* targetWt, const char* propertyName);
+    bool bindWtToProp(QComboBox* targetWt, const char* propertyName, WriteAlgorithm wa = WriteAlgorithm::noNotifyOnWrite);
+    bool bindWtToProp(QButtonGroup* targetWt, const char* propertyName, WriteAlgorithm wa = WriteAlgorithm::noNotifyOnWrite);
+    bool bindWtToProp(QLabel* targetWt, const char* propertyName);
 
     template <typename Tval>bool stringTo(const QString& val, Tval& result, IntType type = IntType::notInt){
         bool isOk{false};
@@ -96,6 +103,7 @@ protected:
     bool checkSupportedTypes(QDoubleSpinBox* obj, const char* propertyName);
     bool checkSupportedTypes(QButtonGroup* obj, const char* propertyName);
     bool checkSupportedTypes(QComboBox* obj, const char* propertyName);
+    bool checkSupportedTypes(QLabel* obj, const char* propertyName);
 
     QList<QMetaType::Type> supportedLineEditTypes;
     QList<QMetaType::Type> supportedComboBoxTypes;
@@ -103,6 +111,7 @@ protected:
     QList<QMetaType::Type> supportedGroupButtonsTypes;
     QList<QMetaType::Type> supportedSpinBoxTypes;
     QList<QMetaType::Type> supportedDoubleSpinBoxTypes;
+    QList<QMetaType::Type> supportedLabelsTypes;
 
     template<class T> QVariant getVariantEnumClass(int n){                  //TODO add check for registered T
           return QVariant::fromValue<T>(static_cast<T>(n));
