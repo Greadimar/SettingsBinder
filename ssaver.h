@@ -5,15 +5,17 @@
 #include <QMetaMethod>
 #include <QMetaProperty>
 #include <QDebug>
-constexpr bool debugSs{false};
+constexpr bool debugSs{true};
 
 namespace SSaver {
     void save(QObject *target, QString extraGroupKey = "");
     void load(QObject *target, QString extraGroupKey = "");
+    void saveVec(QVector<QVariant>& vars, QString customName);
+    QVector<QVariant> loadVec(QString customName);
     void saveWithPath(QObject *target, QString path, QString extraGroupKey = "");
     void loadFromPath(QObject *target, QString path, QString extraGroupKey = "");
-    void saveChildren(QObject *target);
-    void loadChildren(QObject *target);
+    /*void saveChildren(QObject *target);
+    void loadChildren(QObject *target);*/
     inline const QMetaObject* getMeta(QObject* obj){
         return obj->metaObject();
     }
