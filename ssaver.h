@@ -5,7 +5,7 @@
 #include <QMetaMethod>
 #include <QMetaProperty>
 #include <QDebug>
-constexpr bool debugSs{true};
+constexpr bool debugSs{false};
 
 namespace SSaver {
     void save(QObject *target, QString extraGroupKey = "");
