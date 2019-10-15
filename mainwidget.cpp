@@ -41,5 +41,6 @@ MainWidget::MainWidget(QWidget *parent) :
 MainWidget::~MainWidget()
 {
     settings->save();
+
     delete ui;
 }

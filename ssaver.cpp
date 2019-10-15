@@ -10,26 +10,27 @@ void SSaver::load(QObject *target, QString extraGroupKey)
 {
     loadFromPath(target, QDir::currentPath(), extraGroupKey);
 }
+/*
 void SSaver::saveChildren(QObject* target)
 {
     saveWithPath(target, QDir::currentPath(), target->metaObject()->className());
     QObjectList children = target->children();
     if (children.isEmpty()) return;
-    for (auto ch: children){
+    for (auto& ch: children){
         saveChildren(ch);
     }
 }
 
 void SSaver::loadChildren(QObject *target)
 {
-    loadFromPath(target, QDir::currentPath(), target->metaObject()->className());
+   // loadFromPath(target, QDir::currentPath(), target->metaObject()->className());
     QObjectList children = target->children();
     if (children.isEmpty()) return;
-    for (auto ch: children){
+    for (auto& ch: children){
         loadChildren(ch);
     }
 }
-
+*/
 
 void SSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
 {
@@ -75,4 +76,29 @@ void SSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
         if (debugSs) qDebug()<<Q_FUNC_INFO<<" signal emitted: "<<emitted;
     }
     qsets.endGroup();
+}
+
+void SSaver::saveVec(QVector<QVariant> &vars, QString customName)
+{
+    QSettings qsets(QDir::currentPath(), QSettings::IniFormat);
+    qsets.beginGroup(customName);
+    qsets.setValue("size_vars", vars.size());
+    int ind{0};
+    for (auto& var: vars){
+        qsets.setValue(QString::number(ind++), var);
+    }
+    qsets.endGroup();
+}
+
+QVector<QVariant> SSaver::loadVec(QString customName)
+{
+    QSettings qsets(QDir::currentPath(), QSettings::IniFormat);
+    qsets.beginGroup(customName);
+    QVector<QVariant> vars;
+    int size = qsets.value("size_vars").toInt();
+    for (int i = 0; i < size; i++){
+        vars.append(qsets.value(QString::number(i)));
+    }
+    qsets.endGroup();
+    return vars;
 }
