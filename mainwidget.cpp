@@ -35,12 +35,12 @@ MainWidget::MainWidget(QWidget *parent) :
     settings->bindWtToProp(btngrpStates, "stateForGrpb");
     settings->bindWtToProp(ui->cbEnum, "stateForCb", BindedSettings::WriteAlgorithm::notifyOnWrite);
     settings->bindWtToProp(ui->lblEnum, "stateForCb");
-    SSaver::load(ui->widget);
+
 }
 
 MainWidget::~MainWidget()
 {
     settings->save();
-    SSaver::save(ui->widget);
+
     delete ui;
 }
