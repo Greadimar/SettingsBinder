@@ -304,7 +304,7 @@ bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyNa
             }
 
             mp.write(this, var);
-            if (wa == WriteAlgorithm::notifyOnWrite) signal.invoke(this);
+            if (wa == WriteAlgorithm::notifyOnWrite) signal.invoke(this);   //TODO mp.write will invoke it anyway, right?
         });
     }
     else{

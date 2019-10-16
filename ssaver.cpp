@@ -80,25 +80,28 @@ void SSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
 
 void SSaver::saveVec(QVector<QVariant> &vars, QString customName)
 {
-    QSettings qsets(QDir::currentPath(), QSettings::IniFormat);
+    QSettings qsets(QDir::currentPath() + "/settings.ini", QSettings::IniFormat);
     qsets.beginGroup(customName);
-    qsets.setValue("size_vars", vars.size());
-    int ind{0};
-    for (auto& var: vars){
-        qsets.setValue(QString::number(ind++), var);
+    qsets.beginWriteArray("vars");
+    for (int i = 0; i < vars.size(); i++){
+        qsets.setArrayIndex(i);
+        qsets.setValue(QString("var: %1").arg(i), vars.at(i));
     }
+    qsets.endArray();
     qsets.endGroup();
 }
 
 QVector<QVariant> SSaver::loadVec(QString customName)
 {
-    QSettings qsets(QDir::currentPath(), QSettings::IniFormat);
+    QSettings qsets(QDir::currentPath() + "/settings.ini", QSettings::IniFormat);
     qsets.beginGroup(customName);
     QVector<QVariant> vars;
-    int size = qsets.value("size_vars").toInt();
+    int size = qsets.beginReadArray("vars");
     for (int i = 0; i < size; i++){
-        vars.append(qsets.value(QString::number(i)));
+        qsets.setArrayIndex(i);
+        vars.append(qsets.value(QString("var: %1").arg(i)));
     }
+    qsets.endArray();
     qsets.endGroup();
     return vars;
 }

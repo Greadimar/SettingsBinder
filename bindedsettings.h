@@ -39,6 +39,11 @@ public:
     virtual ~BindedSettings(){}
     void save();
     void load();
+    template <class T> T* createBinded(const char* propertyName){
+        T* wt = new T();
+        bindWtToProp(wt, propertyName);
+        return wt;
+    }
     bool bindWtToProp(QLineEdit* targetWt, const char* propertyName);
     bool bindWtToProp(QLineEdit* targetWt, const char* propertyName, IntType type);
     bool bindWtToProp(QSpinBox* targetWt, const char* propertyName);
