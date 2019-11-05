@@ -10,8 +10,10 @@ template <typename TVal>
 inline QLineEdit* bindLeToVal(QObject* connector, TVal& val , QLineEdit* le){
     if (!le) le = new QLineEdit();
     auto lambda = [&](QString txt){
-        if constexpr (std::is_same_v<TVal, QString>){
-            txt.contains("0x")? val = txt.toUInt(nullptr, 16): val = txt.toUInt();
+        if constexpr (std::is_unsigned_v<TVal>){
+            ulong proxy;
+            txt.contains("0x")? proxy = txt.toULong(nullptr, 16): proxy = txt.toULong();
+            val = static_cast<TVal>(proxy);
         }
         else if constexpr(std::is_integral_v<TVal>){
             long proxy;
@@ -101,10 +103,12 @@ template <typename TVal>
 inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val , QLineEdit* le){
     if (!le) le = new QLineEdit();
     auto lambda = [&](QString txt){
-        if constexpr (std::is_same_v<TVal, QString>){
-            txt.contains("0x")? val = txt.toUInt(nullptr, 16): val = txt.toUInt();
+        if constexpr (std::is_unsigned_v<TVal>){
+            ulong proxy;
+            txt.contains("0x")? proxy = txt.toULong(nullptr, 16): proxy = txt.toULong();
+            val = static_cast<TVal>(proxy);
         }
-        else if constexpr (std::is_integral_v<TVal>){
+        else if constexpr(std::is_integral_v<TVal>){
             long proxy;
             txt.contains("0x")? proxy = txt.toLong(nullptr, 16): proxy = txt.toLong();
             val = static_cast<TVal>(proxy);
