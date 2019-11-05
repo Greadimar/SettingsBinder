@@ -1,7 +1,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include <QDebug>
-
+#include "lightbinding.h"
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWidget)
@@ -36,11 +36,27 @@ MainWidget::MainWidget(QWidget *parent) :
     settings->bindWtToProp(ui->cbEnum, "stateForCb", BindedSettings::WriteAlgorithm::notifyOnWrite);
     settings->bindWtToProp(ui->lblEnum, "stateForCb");
 
+    //lightBinding
+    ui->cbIntL->addItems({"1","2", "3"});
+    ui->leUintL->setText("15");
+    ui->leStringL->setText("Some");
+    ui->leIntL->setText("15");
+    LightBinding::bindLeToVal(this, ls.intForLe, ui->leIntL);
+    LightBinding::bindLeToVal(this, ls.uintForLe, ui->leUintL);
+    LightBinding::bindLeToVal(this, ls.strForLe, ui->leStringL);
+
+    ls.setVars(SSaver::loadVec("LightSettings"));
+    LightBinding::bindLeFromVal(this, ls.shortForLe, ui->leShortL);
+    LightBinding::bindLeFromHex(this, ls.uintHexForLe, ui->leUintHexL);
+    LightBinding::bindSbFromVal(this, ls.intForSb, ui->sbIntL);
+    LightBinding::bindLeFromVal(this, ls.dblForLe, ui->leDoubleL);
+    LightBinding::bindDsbFromVal(this, ls.dblForDsb, ui->dsbDoubleL);
+    LightBinding::bindChbFromVal(this, ls.boolForChb, ui->chbL);
 }
 
 MainWidget::~MainWidget()
 {
     settings->save();
-
+    SSaver::saveVec(ls.getVar(), "LightSettings");
     delete ui;
 }

@@ -1,46 +1,15 @@
 #include "ssaver.h"
 
 
-void SSaver::save(QObject* target, QString extraGroupKey)
-{
-    saveWithPath(target, QDir::currentPath(), extraGroupKey);
-}
-
-void SSaver::load(QObject *target, QString extraGroupKey)
-{
-    loadFromPath(target, QDir::currentPath(), extraGroupKey);
-}
-/*
-void SSaver::saveChildren(QObject* target)
-{
-    saveWithPath(target, QDir::currentPath(), target->metaObject()->className());
-    QObjectList children = target->children();
-    if (children.isEmpty()) return;
-    for (auto& ch: children){
-        saveChildren(ch);
-    }
-}
-
-void SSaver::loadChildren(QObject *target)
-{
-   // loadFromPath(target, QDir::currentPath(), target->metaObject()->className());
-    QObjectList children = target->children();
-    if (children.isEmpty()) return;
-    for (auto& ch: children){
-        loadChildren(ch);
-    }
-}
-*/
-
-void SSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
+void SSaver::save(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
     if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
-    QString setsName(path + "/" +QString::fromUtf8(metaTarget->className()) + ".ini");
+    QString setsName(fileName);
     QSettings qsets(setsName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
-    qsets.beginGroup(QString::fromLocal8Bit("Settings_") + extraGroupKey);
+    qsets.beginGroup(target->objectName());
     for (int i = offset; i < end; i++){
        QMetaProperty metaProp = metaTarget->property(i);
        if (metaProp.isEnumType()){
@@ -54,14 +23,14 @@ void SSaver::saveWithPath(QObject *target, QString path, QString extraGroupKey)
     qsets.endGroup();
 }
 
-void SSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
+void SSaver::load(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
     if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
-    QString setsName(path + "/" +metaTarget->className() + ".ini");
+    QString setsName(fileName + "/" +metaTarget->className() + ".ini");
     QSettings qsets(setsName, QSettings::IniFormat);
-    qsets.beginGroup(QString::fromLocal8Bit("Settings_")+ extraGroupKey);
+    qsets.beginGroup(target->objectName());
     for (QString& propName: propNames){
         QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(propName.toLocal8Bit().data()));
         if (debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
@@ -77,11 +46,10 @@ void SSaver::loadFromPath(QObject *target, QString path, QString extraGroupKey)
     }
     qsets.endGroup();
 }
-
-void SSaver::saveVec(QVector<QVariant> &vars, QString customName)
+void SSaver::saveVec(const QVector<QVariant> &vars, QString groupName, QString fileName)
 {
-    QSettings qsets(QDir::currentPath() + "/settings.ini", QSettings::IniFormat);
-    qsets.beginGroup(customName);
+    QSettings qsets(fileName, QSettings::IniFormat);
+    qsets.beginGroup(groupName);
     qsets.beginWriteArray("vars");
     for (int i = 0; i < vars.size(); i++){
         qsets.setArrayIndex(i);
@@ -91,10 +59,10 @@ void SSaver::saveVec(QVector<QVariant> &vars, QString customName)
     qsets.endGroup();
 }
 
-QVector<QVariant> SSaver::loadVec(QString customName)
+QVector<QVariant> SSaver::loadVec(QString groupName, QString fileName)
 {
-    QSettings qsets(QDir::currentPath() + "/settings.ini", QSettings::IniFormat);
-    qsets.beginGroup(customName);
+    QSettings qsets(fileName, QSettings::IniFormat);
+    qsets.beginGroup(groupName);
     QVector<QVariant> vars;
     int size = qsets.beginReadArray("vars");
     for (int i = 0; i < size; i++){
@@ -105,3 +73,4 @@ QVector<QVariant> SSaver::loadVec(QString customName)
     qsets.endGroup();
     return vars;
 }
+
