@@ -55,27 +55,27 @@ public:
 
     template <typename Tval>bool stringTo(const QString& val, Tval& result, IntType type = IntType::notInt){
         bool isOk{false};
-        if (std::is_same<Tval, uint>::value){
+        if constexpr (std::is_same<Tval, uint>::value){
             result = val.toUInt(&isOk, static_cast<int>(type));
             return isOk;
         }
-        if (std::is_same<Tval, int>::value){
+        if constexpr (std::is_same<Tval, int>::value){
             result = val.toInt(&isOk, static_cast<int>(type));
             return isOk;
         }
-        if (std::is_same<Tval, double>::value){
+        if constexpr(std::is_same<Tval, double>::value){
             result = val.toDouble(&isOk);
             return isOk;
         }
-        if (std::is_same<Tval, long>::value){
+        if constexpr(std::is_same<Tval, long>::value){
             result = val.toLong(&isOk);
             return isOk;
         }
-        if (std::is_same<Tval, short>::value){
+        if constexpr(std::is_same<Tval, short>::value){
             result = val.toShort(&isOk);
             return isOk;
         }
-        if (std::is_same<Tval, ushort>::value){
+        if constexpr(std::is_same<Tval, ushort>::value){
             result = val.toUShort(&isOk);
             return isOk;
         }

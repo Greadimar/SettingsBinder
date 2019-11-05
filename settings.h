@@ -4,14 +4,14 @@
 
 //Q_ENUM(States)
 namespace SomeNamespace {
-    Q_NAMESPACE
-    enum class NsEnumState
-    {
-        nsState0,
-        nsState1,
-        nsState2
-    };
-    Q_ENUM_NS(NsEnumState)
+Q_NAMESPACE
+enum class NsEnumState
+{
+    nsState0,
+    nsState1,
+    nsState2
+};
+Q_ENUM_NS(NsEnumState)
 };
 class Settings: public BindedSettings
 {
@@ -24,7 +24,7 @@ public:
         state2 = 2
     };
     Q_ENUM(States)
-  //  qDebug()<<"enum"
+    //  qDebug()<<"enum"
     Q_PROPERTY(QString stringForLe READ stringForLe WRITE setStringForLe NOTIFY stringForLeChanged)
     Q_PROPERTY(int intForLe READ intForLe WRITE setIntForLe NOTIFY intForLeChanged)
     Q_PROPERTY(uint uintForLe READ uintForLe WRITE setUintForLe NOTIFY uintForLeChanged)
@@ -110,6 +110,37 @@ private:
     int m_intForCb{0};
     States m_stateForGrpb{States::state0};
     SomeNamespace::NsEnumState m_stateForCb{SomeNamespace::NsEnumState::nsState1};
+};
+
+
+class LightSettings{
+public:
+    uint uintForLe;
+    uint uintHexForLe;
+    int intForLe;
+    short shortForLe;
+    QString strForLe;
+    double dblForLe;
+    bool boolForChb;
+    enum class s {
+        s1,
+        s2,
+        s3
+    };
+    int intForSb;
+    double dblForDsb;
+    QVector<QVariant> getVar(){
+        return QVector<QVariant>{uintHexForLe, shortForLe, dblForLe, boolForChb, intForSb, dblForDsb};
+    }
+    void setVars(const QVector<QVariant>& v){
+        if (v.size() < 6) return;
+        uintHexForLe = v.at(0).toUInt();
+        shortForLe = static_cast<short>(v.at(1).toInt());
+        dblForLe = v.at(2).toDouble();
+        boolForChb = v.at(3).toBool();
+        intForSb = v.at(4).toInt();
+        dblForDsb = v.at(5).toDouble();
+    }
 };
 
 #endif // SETTINGS_H

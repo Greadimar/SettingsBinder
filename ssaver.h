@@ -8,11 +8,14 @@
 constexpr bool debugSs{false};
 
 namespace SSaver {
-    void save(QObject *target, QString extraGroupKey = "");
-    void load(QObject *target, QString extraGroupKey = "");
-    void saveVec(QVector<QVariant>& vars, QString customName);
-    QVector<QVariant> loadVec(QString customName);
-    void saveWithPath(QObject *target, QString path, QString extraGroupKey = "");
+    void save(QObject *target,
+                        QString fileName = QDir::currentPath() + "/settings.ini");
+    void load(QObject *target,
+                        QString fileName = QDir::currentPath() + "/settings.ini");
+    void saveVec(const QVector<QVariant> &vars, QString groupName = "",
+                 QString fileName = QDir::currentPath() + "/settings.ini");
+    QVector<QVariant> loadVec(QString groupName = "", QString fileName = QDir::currentPath() + "/settings.ini");
+
     void loadFromPath(QObject *target, QString path, QString extraGroupKey = "");
     /*void saveChildren(QObject *target);
     void loadChildren(QObject *target);*/

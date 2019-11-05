@@ -20,6 +20,7 @@ private:
     Ui::MainWidget *ui;
 
     Settings* settings;
+    LightSettings ls;
 
     QButtonGroup* btngrpStates;
 };
