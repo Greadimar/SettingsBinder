@@ -192,6 +192,7 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QComboBox* cb = n
         }
     };
     connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
+    if (cb->count() < val) return cb;
     cb->setCurrentIndex(val);
     return cb;
 }
