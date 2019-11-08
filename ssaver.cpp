@@ -5,8 +5,7 @@ void SSaver::save(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
     if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
-    QString setsName(fileName);
-    QSettings qsets(setsName, QSettings::IniFormat);
+    QSettings qsets(fileName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
     qsets.beginGroup(target->objectName());
@@ -28,7 +27,7 @@ void SSaver::load(QObject *target, QString fileName)
     const QMetaObject* metaTarget = getMeta(target);
     if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
-    QString setsName(fileName + "/" +metaTarget->className() + ".ini");
+    QString setsName(fileName);
     QSettings qsets(setsName, QSettings::IniFormat);
     qsets.beginGroup(target->objectName());
     for (QString& propName: propNames){
