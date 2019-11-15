@@ -4,7 +4,9 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QComboBox>
-# define NOT_SUPPORTED static_assert(std::is_same<void, void>(), "This type is not supported");
+template <typename T> void NOTSUPPORTED(){
+    static_assert (std::is_same_v<void, T>, "This types is not supported" );
+}
 namespace LightBinding {
 template <typename TVal>
 inline QLineEdit* bindLeToVal(QObject* connector, TVal& val , QLineEdit* le = nullptr){
@@ -29,7 +31,7 @@ inline QLineEdit* bindLeToVal(QObject* connector, TVal& val , QLineEdit* le = nu
             val = static_cast<TVal>(proxy);
         }
         else {
-            NOT_SUPPORTED
+            NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(le, &QLineEdit::textEdited, lambda);
@@ -44,7 +46,7 @@ inline QLineEdit* bindLeToHex(QObject* connector, TVal& val , QLineEdit* le = nu
             val = static_cast<TVal>(txt.toUInt(nullptr, 16));
         }
         else{
-            NOT_SUPPORTED
+          NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(le, &QLineEdit::textEdited, lambda);
@@ -61,7 +63,7 @@ inline QSpinBox* bindSbToVal(QObject* connector, TVal& val , QSpinBox* sb = null
         val = static_cast<TVal>(sb->value());
     }
     else{
-        NOT_SUPPORTED
+            NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -75,7 +77,7 @@ inline QDoubleSpinBox* bindDsbToVal(QObject* connector, TVal& val, QDoubleSpinBo
         val = static_cast<TVal>(sb->value());
     }
     else{
-        NOT_SUPPORTED
+            NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -96,7 +98,7 @@ inline QComboBox* bindCbToVal(QObject* connector, TVal& val, QComboBox* cb = nul
             val = static_cast<TVal>(curIdx);
         }
         else {
-            NOT_SUPPORTED
+               NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
@@ -128,8 +130,9 @@ inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val , QLineEdit* le = 
             val = static_cast<TVal>(proxy);
         }
         else {
-            static_assert(std::is_same<void, void>(), "This type is not supported");
+              NOTSUPPORTED<TVal>();
         }
+
     };
     connector->connect(le, &QLineEdit::textEdited, lambda);
     if constexpr (std::is_integral_v<TVal> || std::is_floating_point_v<TVal>){
@@ -148,7 +151,7 @@ inline QLineEdit* bindLeFromHex(QObject* connector, TVal& val , QLineEdit* le = 
             val = static_cast<TVal>(txt.toUInt(nullptr, 16));
         }
         else {
-            NOT_SUPPORTED
+              NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(le, &QLineEdit::textEdited, lambda);
@@ -165,7 +168,7 @@ inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QSpinBox* sb = nu
         sb->setValue(val);
     }
     else{
-        NOT_SUPPORTED
+            NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -179,7 +182,7 @@ inline QDoubleSpinBox* bindDsbFromVal(QObject* connector, TVal& val, QDoubleSpin
         sb->setValue(val);
     }
     else{
-        NOT_SUPPORTED
+          NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -200,7 +203,7 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QComboBox* cb = n
             val = static_cast<TVal>(curIdx);
         }
         else {
-            NOT_SUPPORTED
+             NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
