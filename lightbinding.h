@@ -46,7 +46,7 @@ inline QLineEdit* bindLeToHex(QObject* connector, TVal& val , QLineEdit* le = nu
             val = static_cast<TVal>(txt.toUInt(nullptr, 16));
         }
         else{
-          NOTSUPPORTED<TVal>();
+            NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(le, &QLineEdit::textEdited, lambda);
@@ -62,8 +62,14 @@ inline QSpinBox* bindSbToVal(QObject* connector, TVal& val , QSpinBox* sb = null
         });
         val = static_cast<TVal>(sb->value());
     }
+    else if constexpr (std::is_same_v<TVal, std::chrono::milliseconds>){
+        connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
+            val = std::chrono::milliseconds(changedVal);
+        });
+        val = std::chrono::milliseconds(sb->value());
+    }
     else{
-            NOTSUPPORTED<TVal>();
+        NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -77,7 +83,7 @@ inline QDoubleSpinBox* bindDsbToVal(QObject* connector, TVal& val, QDoubleSpinBo
         val = static_cast<TVal>(sb->value());
     }
     else{
-            NOTSUPPORTED<TVal>();
+        NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -98,7 +104,7 @@ inline QComboBox* bindCbToVal(QObject* connector, TVal& val, QComboBox* cb = nul
             val = static_cast<TVal>(curIdx);
         }
         else {
-               NOTSUPPORTED<TVal>();
+            NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
@@ -130,7 +136,7 @@ inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val , QLineEdit* le = 
             val = static_cast<TVal>(proxy);
         }
         else {
-              NOTSUPPORTED<TVal>();
+            NOTSUPPORTED<TVal>();
         }
 
     };
@@ -151,7 +157,7 @@ inline QLineEdit* bindLeFromHex(QObject* connector, TVal& val , QLineEdit* le = 
             val = static_cast<TVal>(txt.toUInt(nullptr, 16));
         }
         else {
-              NOTSUPPORTED<TVal>();
+            NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(le, &QLineEdit::textEdited, lambda);
@@ -167,8 +173,14 @@ inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QSpinBox* sb = nu
         });
         sb->setValue(val);
     }
+    else if constexpr (std::is_same_v<TVal, std::chrono::milliseconds>){
+        connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
+            val = std::chrono::milliseconds(changedVal);
+        });
+        sb->setValue(val.count);
+    }
     else{
-            NOTSUPPORTED<TVal>();
+        NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -182,7 +194,7 @@ inline QDoubleSpinBox* bindDsbFromVal(QObject* connector, TVal& val, QDoubleSpin
         sb->setValue(val);
     }
     else{
-          NOTSUPPORTED<TVal>();
+        NOTSUPPORTED<TVal>();
     }
     return sb;
 }
@@ -203,7 +215,7 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QComboBox* cb = n
             val = static_cast<TVal>(curIdx);
         }
         else {
-             NOTSUPPORTED<TVal>();
+            NOTSUPPORTED<TVal>();
         }
     };
     connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
