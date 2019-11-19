@@ -169,6 +169,7 @@ bool BindedSettings::bindWtToProp(QCheckBox *targetWt, const char *propertyName)
             if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QCheckBox changing property";
             QVariant var(chb->isChecked());
             mp.write(this, var);
+            signal.invoke(this);
         });
     }
     else{
@@ -185,7 +186,7 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
     if (!mp.isStored(this)){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;
-    }  
+    }
     if (!checkSupportedTypes(cb, propertyName) && !mp.isEnumType()){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
         return false;
@@ -193,8 +194,15 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
     if (mp.isEnumType()){
         QMetaEnum me = mp.enumerator();
         for (int i = 0; i < me.keyCount(); i++){
-            const char* s = me.key(i);
-            QString name = strFromChars(s);
+            QString name;
+            if (mpHasTranslation(mp)){
+                auto tr = getEnumTranslation(mp);
+                name = tr.enumToStr(me.keyToValue(me.key(i)));
+            }
+            else {
+                const char* s = me.key(i);
+                name = strFromChars(s);
+            }
             cb->insertItem(i, name);
         }
     }
@@ -202,17 +210,26 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
         QComboBox* target = qobject_cast<QComboBox*>(obj);
         if (target == nullptr) return false;
         if (mp.isEnumType()){
-            QMetaEnum me = mp.enumerator();
-            QString str = strFromChars(me.key(mp.read(this).toInt()));
-            target->setCurrentText(str);
+            QString name;
+            if (mpHasTranslation(mp)){
+                auto tr = getEnumTranslation(mp);
+                QVariant var = mp.read(this);
+                name = tr.enumToStr(var);
+            }
+            else{
+                QMetaEnum me = mp.enumerator();
+                name = strFromChars(me.key(mp.read(this).toInt()));
+            }
+            target->setCurrentText(name);
             return true;
+
         }
         if (mp.type() == QVariant::Int){
             target->setCurrentIndex(mp.read(this).toInt());
             return true;
         }
         if (mp.type() == QVariant::UInt){
-            target->setCurrentIndex(mp.read(this).toUInt());
+            target->setCurrentIndex(static_cast<int>(mp.read(this).toUInt()));
             return true;
         }
         if (mp.type() == QVariant::String){
@@ -231,7 +248,13 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
             if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
             QVariant var;
             if (mp.isEnumType()){
-                var = QVariant(cb->currentText());
+                if (mpHasTranslation(mp)){
+                    auto tr = getEnumTranslation(mp);
+                    var = tr.strToEnum(cb->currentText());
+                }
+                else{
+                    var = QVariant(cb->currentText());
+                }
             }
             else if (mp.type() == QVariant::Int){
                 var = QVariant(cb->currentIndex());
@@ -479,10 +502,10 @@ bool BindedSettings::checkSupportedTypes(QComboBox *obj, const char *propertyNam
 bool BindedSettings::checkSupportedTypes(QLabel *obj, const char *propertyName)
 {
     if (obj == nullptr) return false;
-     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
-     QMetaType::Type t = static_cast<QMetaType::Type>(mp.type());
-     if (QMetaType::isRegistered(t) && supportedLabelsTypes.contains(t)) return true;
-     return false;
+    QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    QMetaType::Type t = static_cast<QMetaType::Type>(mp.type());
+    if (QMetaType::isRegistered(t) && supportedLabelsTypes.contains(t)) return true;
+    return false;
 }
 
 void BindedSettings::fillSupportedLits()    // TODO make it static!
@@ -515,81 +538,56 @@ void BindedSettings::invokeReader()
         if (debugBs) qDebug()<<Q_FUNC_INFO << " reader returned false, can't read property to object";
 }
 
+bool BindedSettings::addEnumTranslation(std::function<QString (QVariant)> enumToStr, std::function<QVariant(QString)> strToEnum, const char *propertyName)
+{
+    QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    if (!enumToStr || !strToEnum){
+        qWarning()<<Q_FUNC_INFO<<": can't add translation to "<<propertyName << " - translator is empty";
+        return false;
+    }
+    if (!mp.isStored(this)){
+        qWarning()<<Q_FUNC_INFO<<": can't add translation to "<<propertyName << " - no property found";
+        return false;
+    }
+    if (!mp.isEnumType()){
+        qWarning()<<Q_FUNC_INFO<<": can't add translation to "<<propertyName << " - property is not enum type";
+        return false;
+    }
+    enumTranslations.append(Translation{mp, enumToStr, strToEnum});
+    return true;
+}
 
 
 void BindedSettings::save()
 {
     if (debugBs) qDebug()<<Q_FUNC_INFO;
     SSaver::save(this);
-    /*
-    if (debugBs) qDebug()<< Q_FUNC_INFO << " saving properties";
-    QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
-    QSettings qsets(setsName, QSettings::IniFormat);
-    int offset = metaObject()->propertyOffset();
-    int end = metaObject()->propertyCount();
-    qsets.beginGroup("Settings");
-    for (int i = offset; i < end; i++){
-       QMetaProperty metaProp = metaObject()->property(i);
-       if (metaProp.isEnumType()){
-           qsets.setValue(strFromChars(metaProp.name()), QVariant(metaProp.read(this)).toInt());
-           continue;
-       }
-       qsets.setValue(strFromChars(metaProp.name()), QVariant::fromValue(metaProp.read(this)));
-    }
-    qsets.endGroup();*/
+
 }
 
 void BindedSettings::load()
 {
     if (debugBs) qDebug()<<Q_FUNC_INFO;
     SSaver::load(this);
-    /*
-    QStringList propNames = collectPropsNames(this);
-    QString setsName(QDir::currentPath() + "/" + QString::fromUtf8(metaObject()->className()) + ".ini");
-    QSettings qsets(setsName, QSettings::IniFormat);
-    qsets.beginGroup("Settings");
-    if (debugBs) qDebug()<<Q_FUNC_INFO<<((metaObject() == nullptr)? "not meta": "metaExists");
-    if (debugBs) qDebug()<<Q_FUNC_INFO<<"propertyCount"<<metaObject()->propertyCount();
-    for (QString& propName: propNames){
-        qDebug() << propName.data() << propName.toLocal8Bit().data();
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<"propName, index of Prop" << propName << metaObject()->indexOfProperty(propName.toLocal8Bit().data());
-        QMetaProperty metaProp = metaObject()->property(metaObject()->indexOfProperty(propName.toLocal8Bit().data()));
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(this)<<metaProp.isEnumType();
-        QVariant value = qsets.value(propName);
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value<<propName;
-        if (metaProp.isEnumType()){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<" trying to load enumType property";
-            if (debugBs){
-                qDebug()<<Q_FUNC_INFO<<" here are all methods";
-                for (int j = metaObject()->methodOffset(); j < metaObject()->methodCount(); j++){
-                    qDebug()<<Q_FUNC_INFO<<"method: "<<QString::number(j)<<" with name: "<<metaObject()->method(j).name();
-                }
-            }
-            QString methodName(propName + "Variant" + "(int)");
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<" what am i invoking:"<<methodName;
-            int idxOfMethod = metaObject()->indexOfMethod(QMetaObject::normalizedSignature(methodName.toLocal8Bit().data()));
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<" idx of found method"<< idxOfMethod;
-            QMetaMethod mm = metaObject()->method(idxOfMethod);
-            QVariant enumClassVar;                                                                          //this is where we get result variant from invoking getVariant
-            bool invoked{false};
-            invoked = mm.invoke(this, Q_RETURN_ARG(QVariant, enumClassVar), Q_ARG(int, value.toInt()));
-            bool written{false};
-            metaProp.write(this, enumClassVar);
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<" method is valid, is invoked, property written"<<mm.isValid() << invoked << written;
-        }
-        else{
-            if (!value.isNull()){
-                metaProp.write(this, value);
-            }
-        }
-        QMetaMethod signal = metaProp.notifySignal();
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" check loading signal: type:"<<signal.typeName() << ", is valid: "<<signal.isValid()<<", signature: " <<signal.methodSignature();
-        bool emitted = signal.invoke(this);
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" signal emitted: "<<emitted;
-    }
-    qsets.endGroup();
-    */
+
 }
 
 
 
+
+
+bool BindedSettings::mpHasTranslation(QMetaProperty mp)
+{
+    for (auto& val: enumTranslations){
+        if (val.mp.name() == mp.name()) return true;
+    }
+    return false;
+}
+
+BindedSettings::Translation & BindedSettings::getEnumTranslation(QMetaProperty mp)
+{
+    for (auto& val: enumTranslations){
+        if (val.mp.name() == mp.name()) return val;
+    }
+    assert(false);
+}

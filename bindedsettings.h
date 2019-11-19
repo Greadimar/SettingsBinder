@@ -44,6 +44,7 @@ public:
         bindWtToProp(wt, propertyName);
         return wt;
     }
+    bool addEnumTranslation(std::function<QString(QVariant)> enumToStr, std::function<QVariant(QString)>strToEnum, const char* propertyName);
     bool bindWtToProp(QLineEdit* targetWt, const char* propertyName);
     bool bindWtToProp(QLineEdit* targetWt, const char* propertyName, IntType type);
     bool bindWtToProp(QSpinBox* targetWt, const char* propertyName);
@@ -123,6 +124,14 @@ protected:
     }
 
 private:
+    struct Translation{
+        QMetaProperty mp;
+        std::function<QString(QVariant)> enumToStr;
+        std::function<QVariant(QString)> strToEnum;
+    };
+    QVector<Translation> enumTranslations;
+    bool mpHasTranslation(QMetaProperty mp);
+    Translation& getEnumTranslation(QMetaProperty mp);
     void fillSupportedLits();
     const QMetaObject* getMeta(const QObject* obj){
         return obj->metaObject();
