@@ -179,7 +179,7 @@ inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QSpinBox* sb = nu
         connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
             val = std::chrono::milliseconds(changedVal);
         });
-        sb->setValue(val.count);
+        sb->setValue(val.count());
     }
     else{
         NOTSUPPORTED<TVal>();
