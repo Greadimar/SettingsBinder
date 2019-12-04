@@ -56,6 +56,7 @@ void SSaver::saveVec(const QVector<QVariant> &vars, QString groupName, QString f
     }
     qsets.endArray();
     qsets.endGroup();
+    qsets.sync();
 }
 
 QVector<QVariant> SSaver::loadVec(QString groupName, QString fileName)
