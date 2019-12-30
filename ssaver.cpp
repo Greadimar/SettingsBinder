@@ -13,7 +13,10 @@ void SSaver::save(QObject *target, QString fileName)
        QMetaProperty metaProp = metaTarget->property(i);
        if (metaProp.isEnumType()){
            QMetaEnum me = metaProp.enumerator();
-           QString str = strFromChars(me.key(metaProp.read(target).toInt()));
+           QVariant var = metaProp.read(target);
+           int n = var.toInt();
+           const char* ch = me.valueToKey(n);
+           QString str = strFromChars(ch);
            qsets.setValue(strFromChars(metaProp.name()), str);
            continue;
        }

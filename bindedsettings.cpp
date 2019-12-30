@@ -218,7 +218,7 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
             }
             else{
                 QMetaEnum me = mp.enumerator();
-                name = strFromChars(me.key(mp.read(this).toInt()));
+                name = strFromChars(me.valueToKey(mp.read(this).toInt()));
             }
             target->setCurrentText(name);
             return true;

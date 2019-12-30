@@ -34,7 +34,7 @@ HEADERS += \
 FORMS += \
         mainwidget.ui
 
-include($$(SHARED_LIBS)/settingsbinder/settingsbinder.pri)
+include(settingsbinder.pri)
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
