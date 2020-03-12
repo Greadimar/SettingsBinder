@@ -1,6 +1,7 @@
 #ifndef BINDEDSETTINGS_H
 #define BINDEDSETTINGS_H
 #include <QObject>
+#include <QTabWidget>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QPushButton>
@@ -51,6 +52,7 @@ public:
     bool bindWtToProp(QDoubleSpinBox* targetWt, const char* propertyName);
     bool bindWtToProp(QCheckBox* targetWt, const char* propertyName);
     bool bindWtToProp(QComboBox* targetWt, const char* propertyName, WriteAlgorithm wa = WriteAlgorithm::noNotifyOnWrite);
+    bool bindWtToProp(QTabWidget* targetWt, const char* propertyName, WriteAlgorithm wa = WriteAlgorithm::noNotifyOnWrite);
     bool bindWtToProp(QButtonGroup* targetWt, const char* propertyName, WriteAlgorithm wa = WriteAlgorithm::noNotifyOnWrite);
     bool bindWtToProp(QLabel* targetWt, const char* propertyName);
 
@@ -103,16 +105,21 @@ public slots:
     void invokeReader();
 protected:
 
+
+
+
     bool checkSupportedTypes(QLineEdit* obj, const char* propertyName);
     bool checkSupportedTypes(QCheckBox* obj, const char* propertyName);
     bool checkSupportedTypes(QSpinBox* obj, const char* propertyName);
     bool checkSupportedTypes(QDoubleSpinBox* obj, const char* propertyName);
     bool checkSupportedTypes(QButtonGroup* obj, const char* propertyName);
     bool checkSupportedTypes(QComboBox* obj, const char* propertyName);
+    bool checkSupportedTypes(QTabWidget* obj, const char* propertyName);
     bool checkSupportedTypes(QLabel* obj, const char* propertyName);
 
     QList<QMetaType::Type> supportedLineEditTypes;
     QList<QMetaType::Type> supportedComboBoxTypes;
+    QList<QMetaType::Type> supportedTabWidgetTypes;
     QList<QMetaType::Type> supportedCheckBoxTypes;
     QList<QMetaType::Type> supportedGroupButtonsTypes;
     QList<QMetaType::Type> supportedSpinBoxTypes;
