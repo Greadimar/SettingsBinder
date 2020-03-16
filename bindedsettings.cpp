@@ -277,6 +277,51 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
     return true;
 }
 
+bool BindedSettings::bindWtToProp(QTabWidget *targetWt, const char *propertyName, WriteAlgorithm wa)
+{
+    QTabWidget* tw = targetWt;
+    QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    if (!mp.isStored(this)){
+        qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
+        return false;
+    }
+    if (!checkSupportedTypes(tw, propertyName) && !mp.isEnumType()){
+        qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - wrong type of property";
+        return false;
+    }
+    auto reader = [=](QObject* obj)->bool{
+        QTabWidget* target = qobject_cast<QTabWidget*>(obj);
+        if (target == nullptr) return false;
+        if (mp.type() == QVariant::Int){
+            target->setCurrentIndex(mp.read(this).toInt());
+            return true;
+        }
+        return true;
+    };
+    reader(tw);
+    bindedMap.insert(QString::fromUtf8(propertyName), ReaderStruct(tw,reader));
+    QMetaMethod signal = mp.notifySignal();
+    QMetaMethod slot = metaObject()->method(metaObject()->indexOfSlot("invokeReader()"));
+    connect(this, signal, this, slot);
+    if (mp.isWritable()){
+        connect(tw, &QTabWidget::currentChanged, this, [=](){
+            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QTabWidget changing property";
+            QVariant var;
+            if (mp.type() == QVariant::Int){
+                var = QVariant(tw->currentIndex());
+            }
+
+            mp.write(this, var);
+            if (wa == WriteAlgorithm::notifyOnWrite) signal.invoke(this);
+        });
+    }
+    else{
+        qDebug()<<Q_FUNC_INFO<<": can't bind writing "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - property is not writable";
+    }
+
+    return true;
+}
+
 bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyName, WriteAlgorithm wa)
 {
     QButtonGroup* btnGrp = targetWt;
@@ -499,6 +544,14 @@ bool BindedSettings::checkSupportedTypes(QComboBox *obj, const char *propertyNam
     return false;
 }
 
+bool BindedSettings::checkSupportedTypes(QTabWidget *obj, const char *propertyName)
+{
+    if (obj == nullptr) return false;
+    QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
+    if (supportedTabWidgetTypes.contains(static_cast<QMetaType::Type>(mp.type()))) return true;
+    return false;
+}
+
 bool BindedSettings::checkSupportedTypes(QLabel *obj, const char *propertyName)
 {
     if (obj == nullptr) return false;
@@ -515,6 +568,7 @@ void BindedSettings::fillSupportedLits()    // TODO make it static!
     supportedCheckBoxTypes << QMetaType::Type(QMetaType::Bool);
     supportedComboBoxTypes << QMetaType::Type(QMetaType::QString) << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::UInt);
     supportedSpinBoxTypes << QMetaType::Type(QMetaType::Int);
+    supportedTabWidgetTypes << QMetaType::Type(QMetaType::Int);
     supportedDoubleSpinBoxTypes << QMetaType::Type(QMetaType::Double);
     supportedGroupButtonsTypes << QMetaType::Type(QMetaType::Int);
     supportedLabelsTypes << QMetaType::Type(QMetaType::Int) << QMetaType::Type(QMetaType::QString);
