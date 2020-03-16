@@ -4,6 +4,7 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QRadioButton>
 template <typename T> void NOTSUPPORTED(){
     static_assert (std::is_same_v<void, T>, "This types is not supported" );
 }
@@ -93,6 +94,14 @@ inline QDoubleSpinBox* bindDsbToVal(QObject* connector, TVal& val, QDoubleSpinBo
 inline QCheckBox* bindChbToVal(QObject* connector, bool& val, QCheckBox* chb = nullptr){
     if (!chb) chb = new QCheckBox();
     connector->connect(chb, &QCheckBox::toggled, [&](bool checked){
+        val = checked;
+    });
+    val = chb->isChecked();
+    return chb;
+}
+inline QRadioButton* bindRbToVal(QObject* connector, bool& val, QRadioButton* chb = nullptr){
+    if (!chb) chb = new QRadioButton();
+    connector->connect(chb, &QRadioButton::toggled, [&](bool checked){
         val = checked;
     });
     val = chb->isChecked();
@@ -204,6 +213,14 @@ inline QDoubleSpinBox* bindDsbFromVal(QObject* connector, TVal& val, QDoubleSpin
 inline QCheckBox* bindChbFromVal(QObject* connector, bool& val, QCheckBox* chb = nullptr){
     if (!chb) chb = new QCheckBox();
     connector->connect(chb, &QCheckBox::toggled, [&](bool checked){
+        val = checked;
+    });
+    chb->setChecked(val);
+    return chb;
+}
+inline QRadioButton* bindRbFromVal(QObject* connector, bool& val, QRadioButton* chb = nullptr){
+    if (!chb) chb = new QRadioButton();
+    connector->connect(chb, &QRadioButton::toggled, [&](bool checked){
         val = checked;
     });
     chb->setChecked(val);
