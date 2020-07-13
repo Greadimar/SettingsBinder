@@ -5,6 +5,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QRadioButton>
+#include <QButtonGroup>
 template <typename T> void NOTSUPPORTED(){
     static_assert (std::is_same_v<void, T>, "This types is not supported" );
 }
@@ -121,6 +122,19 @@ inline QComboBox* bindCbToVal(QObject* connector, TVal& val, QComboBox* cb = nul
     connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
     lambda(cb->currentIndex());
     return cb;
+}
+
+template <typename TEnumVal>
+inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
+    if (!bgrp) bgrp = new QButtonGroup(connector);
+    static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
+    auto lambda = [&](){
+        val = static_cast<TEnumVal>(bgrp->checkedId());
+    };
+    connector->connect(bgrp, &QButtonGroup::buttonToggled, lambda);
+    if (bgrp->checkedId() >= 0)
+        lambda(bgrp->checkedId());
+    return bgrp;
 }
 
 //from val
@@ -241,6 +255,19 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QComboBox* cb = n
     if (cb->count() <= static_cast<int>(val)) return cb;
     cb->setCurrentIndex(static_cast<int>(val));
     return cb;
+}
+template <typename TEnumVal>
+inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
+    if (!bgrp) bgrp = new QButtonGroup(connector);
+    static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
+    auto lambda = [&](){
+        val = static_cast<TEnumVal>(bgrp->checkedId());
+    };
+    connector->connect(bgrp, &QButtonGroup::buttonToggled, lambda);
+    int idx = static_cast<int>(val);
+    if (idx < bgrp->buttons().size() && idx > 0)
+    bgrp->button(idx)->setChecked(true);
+    return bgrp;
 }
 }
 
