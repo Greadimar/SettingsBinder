@@ -512,18 +512,6 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QComboBox* cb = n
     cb->setCurrentIndex(static_cast<int>(val));
     return cb;
 }
-template <typename TEnumVal>
-inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
-    if (!bgrp) bgrp = new QButtonGroup(connector);
-    static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
-    auto lambda = [&](){
-        val = static_cast<TEnumVal>(bgrp->checkedId());
-    };
-    connector->connect(bgrp, &QButtonGroup::buttonToggled, lambda);
-    int idx = static_cast<int>(val);
-    if (idx < bgrp->buttons().size() && idx > 0)
-    bgrp->button(idx)->setChecked(true);
-    return bgrp;
 template <typename TVal>
 inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QMutex& m, QComboBox* cb = nullptr){
     if (!cb) cb = new QComboBox();
@@ -542,10 +530,20 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QMutex& m, QCombo
     cb->setCurrentIndex(static_cast<int>(val));
     return cb;
 }
-}
+template <typename TEnumVal>
 
+inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
+    if (!bgrp) bgrp = new QButtonGroup(connector);
+    static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
+    auto lambda = [&](){
+        val = static_cast<TEnumVal>(bgrp->checkedId());
+    };
+    connector->connect(bgrp, &QButtonGroup::buttonToggled, lambda);
+    int idx = static_cast<int>(val);
+    if (idx < bgrp->buttons().size() && idx > 0)
+    bgrp->button(idx)->setChecked(true);
+    return bgrp;
 }
-
 
 
 #endif // LIGHTBINDING_H
