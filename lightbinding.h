@@ -101,25 +101,6 @@ inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val , QLineEdit* le = 
         }
 
     };
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), lambda);
-    lambda(cb->currentIndex());
-    return cb;
-}
-
-template <typename TEnumVal>
-inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
-    if (!bgrp) bgrp = new QButtonGroup(connector);
-    static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
-    auto lambda = [&](){
-        val = static_cast<TEnumVal>(bgrp->checkedId());
-    };
-    connector->connect(bgrp, &QButtonGroup::buttonToggled, lambda);
-    if (bgrp->checkedId() >= 0)
-        lambda(bgrp->checkedId());
-    return bgrp;
-}
-
-//from val
     connector->connect(le, &QLineEdit::textEdited, lambda);
     if constexpr (std::is_integral_v<TVal> || std::is_floating_point_v<TVal>){
         le->setText(QString::number(val));
@@ -128,7 +109,8 @@ inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonG
         le->setText(val);
     }
     return le;
-};
+}
+
 template <typename TVal>
 inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val, QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
@@ -530,8 +512,23 @@ inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QMutex& m, QCombo
     cb->setCurrentIndex(static_cast<int>(val));
     return cb;
 }
-template <typename TEnumVal>
 
+
+template <typename TEnumVal>
+inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
+    if (!bgrp) bgrp = new QButtonGroup(connector);
+    static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
+    auto lambda = [&](){
+        val = static_cast<TEnumVal>(bgrp->checkedId());
+    };
+    connector->connect(bgrp, &QButtonGroup::buttonToggled, lambda);
+    if (bgrp->checkedId() >= 0)
+        lambda(bgrp->checkedId());
+    return bgrp;
+}
+
+//from val
+template <typename TEnumVal>
 inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
     if (!bgrp) bgrp = new QButtonGroup(connector);
     static_assert (std::is_enum_v<TEnumVal>, "please, use enum or enum class to bind this button group");
@@ -545,5 +542,5 @@ inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButto
     return bgrp;
 }
 
-
+}
 #endif // LIGHTBINDING_H
