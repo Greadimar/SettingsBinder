@@ -340,7 +340,7 @@ inline QDoubleSpinBox* bindDsbToVal(QObject* connector, TVal& val, QMutex& m, QD
 }
 template <typename TVal>
 inline QDoubleSpinBox* bindDsbFromVal(QObject* connector, TVal& val, QDoubleSpinBox* sb = nullptr){
-    if (!sb) sb = new QDoubleSpinBox();
+    if (sb == nullptr) sb = new QDoubleSpinBox();
     if constexpr (std::is_floating_point_v<TVal>){
         connector->connect(sb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
             val = static_cast<TVal>(changedVal);
