@@ -8,7 +8,7 @@
 #include <QButtonGroup>
 #include <QMutex>
 template <typename T> void NOTSUPPORTED(){
-    static_assert (std::is_same_v<void, T>, "This types is not supported" );
+    static_assert (std::is_same_v<void, T>, "This type is not supported" );
 }
 namespace LightBinding {
 
