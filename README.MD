@@ -1,48 +1,49 @@
-﻿# SettingsBinder
+﻿# Description
+Whole library consists of two parts. BindedSettings and LightBinding
+BindedSettings has following possibilities
+* Qt widgets can be binded to values, marked as properties, that provides their auto update when widget's control triggered. Works in opposite way either.
+* Auto loading and saving for properties in constructor and destructor of object inherited from BindedSettings class
+Watch example in settingsbinder.pro
 
-Библиотека имеет следующие возможности:
-* готовые qt виджеты можно привязать к заданным переменным, что обеспечивает их автоматическое изменение при управлении виджетом и наоборот
-* автоматическое сохранение заданных переменных 
-* автоматическая загрузка заданных  переменных в программу и в привязанные виджеты
+LightBinding is static and has following possibilites 
+* Most values can be binded to popular widgets. Has two options: From and To. Binding functions with word "from" will update binding value from current widget's values; "to" will update widget's values from binding value.
+* Binding can take a mutex reference as argument for cases when binding values could be read from another thread.
 
-Длс наглядного представления можно клонировать репозиторий и открыть тестовый проект settingsbinder.pro
-
-# Использование
-Для использования возможностей библиотеки требуется выполнить следующие действия:
-1. Склонировать проект в папку
-2. Добавить в .pro файл своего проекта, например:
+# Using BindedSettings
+For using library u need to do following actions:
+1. Clone your project
+2. Add in you ".pro" file:
 	<pre><code>
-	include($$(SHARED_LIBS)/settingsbinder/settingsbinder.pri)
+	include(settingsbinder/settingsbinder.pri)
 	</code></pre>
-(если директория SHARED_LIBS записана в системных переменных, иначе просто выбрать путь)
-
-3. Для записи переменных создать класс, унаследованный от BindedSettings
-4. В унаследованном классе создать переменные следующим образом:
+3. include "settingsbinder/bindedsettings.h"
+4. For using BindedSettings, you should make your own class (for example Settings) inherited from BindedSettings
+5. In your inherited class make a property :
 <pre><code>
 	class Settings: public BindedSettings
 	{
 		Q_OBJECT
 	public:
 		Q_PROPERTY(QString stringForLe READ stringForLe WRITE setStringForLe NOTIFY stringForLeChanged)
-		 //функция getter (возвращающая m_stringForLe)
+		 //getter:
 		QString stringForLe() const;
-		//функция setter (устанавливает m_stringForLe)
+		//setter:
 		void setStringForLe(const QString &stringForLe)
 	signals:
 		void stringForLeChanged(); 
 	private:
-		//переменная
+		//value
 		QString m_stringForLe;				
 	}
 </code></pre>
-Данное действие удобно выполнить в среде QtCreator, создав переменную m_stringForLe, затем нажать правой кнопкой мыши на ней и выбрать "рефакторинг - установить методы получения и установки значения"
 
-5. В классе интерфейса привязать виджет к переменной
+
+6. In you gui class bind widget to property
 	<pre><code>
 		settings->bindWtToProp(ui->leString, "stringForLe");
-			//первый аргумент - виджет, второй - значение из Q_PROPERTY
+			//first argument is your widget (QLineEdit for this case, second - Q_PROPERTY name)
 	</code></pre>
-6. Для привязки enum class к поддерживаемому виджету требуется в унаследованном от BindedSettings классе написать следующее:
+7. For binding enum class, u should declare it inside you class and use macro Q_ENUM
 <pre><code>
 class Settings: public BindedSettings
 {
@@ -53,11 +54,11 @@ public:
 		state1 = 1,
 		state2 = 2
 	};
-	//Обязательно регистрируем наш класс в Q_ENUM
+	//It's important to use Q_ENUM and don't forget to run qmake after
 	Q_ENUM(States)											
 }
 </code></pre>
-или, если переменная создана в namespace:
+If you want use namespace, than declare it in the same h. file. (Still figuring out why property is not found if it declared in another .h)
 <pre><code>
 namespace SomeNamespace{
 	Q_NAMESPACE
@@ -71,37 +72,49 @@ namespace SomeNamespace{
 }
 </code></pre>
 
-7. В классе интерфейса привязать QButtonGroup к переменной enum class
+8. For binding QButtonGroup to your enum class, don't forget to add buttons
 <pre><code>
-	// создаём пустую группу кнопок
-	btngrpStates = new QButtonGroup();	
-	// добавляем кнопки, соответствующие значению enum class в int							
+	btngrpStates = new QButtonGroup();							
 	btngrpStates->addButton(ui->radioButton, static_cast<int>(Settings::States::state0);           		
 	btngrpStates->addButton(ui->radioButton_2, static_cast<int>(Settings::States::state1);          
-	btngrpStates->addButton(ui->radioButton_3, static_cast<int>(Settings::States::state2);    
-	//первый аргумент - виджет, второй - значение из Q_PROPERTY				
+	btngrpStates->addButton(ui->radioButton_3, static_cast<int>(Settings::States::state2);    			
 	settings->bindWtToProp(btngrpStates, "stateForGrpb");			
 </code></pre>
 
-8. Сохранение и загрузку данных осуществлять через save() и load() унаследованного от BindedSettings класса
+9. You can save and load manually using save() and load() from your class
 
-# Особые случаи
-1. Если требуется QLineEdit привязать данные формата HEX, то нужно добавить параметр в конструктор:
+10. If you need bind hex value to QLineEdit, than add extra argument:
 <pre><code>
 	settings->bindWtToProp(ui->leUintHex, Settings::IntType::hex);
 </code></pre>
-2. Если требуется сохранять и загружать переменные для класса, не унаследованного от BindedSettings, но унаследованного от QObject, то следует задать в нём переменные по тому же принципу(см п.4 пред. абзаца) и для сохранения и загрузки использовать объект класса SettingsSaver:
+
+# Using LightBinding
+1. Clone your project
+2. Add in you ".pro" file:
+	<pre><code>
+	include(settingsbinder/settingsbinder.pri)
+	</code></pre>
+3. include "settingsbinder/lightbinding.h"
+4. If you need to bind value and update it to widget type following:
 <pre><code>
-	SettingsSaver* settingsSaver = new SettingsSaver(myObjectWithProperties);
-	settingsSaver.load();
-	settingsSaver.save();
+	LightBinding::bindSbFromVal(this, someintval, ui->sbEditor);
+	// this -  QObject* which will be used as context for connections
+	// someintval - integer value that will be binded. Make sure it will not get out of scope!
+	// ui->sbEditor - QSpinBox that will be binded to our value	
+</code></pre>
+5. If you need to bind value and update it with the value from widget, use: 
+<pre><code>
+LightBinding::bindLeToVal(this, someString, ui->leEditor) ;
+	// this -  QObject* which will be used as context for connections
+	// someString - string value that will be binded. Make sure it will not get out of scope!
+	// ui->leEditor - QLineEdit that will be binded to our value
+</code></pre>
+6. If you want to bind value and read it from another thread, just pass the mutex
+LightBinding::bindChbToVal(this, someBool, m_mutex, ui->chbEditor) ;
+	// this -  QObject* which will be used as context for connections
+	// someBool - boolean value that will be binded. Make sure it will not get out of scope!
+	// m_mutex - your mutex. Make sure it will not get out of scope!
+	// ui->chbEditor - QCheckBox that will be binded to our value
 </code></pre>
 
-# Поддерживаемые привязки на текущий момент:
-	QLineEdit - QString / uint (decimal) / uint (hex) / int / short / long / double 
-	QComboBox - int/ enumclass
-	QSpinBox - int / uint
-	QDoubleSpinBox - double
-	QCheckBox - bool
-	QGroupButton - enum class / int
 	
