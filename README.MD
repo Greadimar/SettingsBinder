@@ -110,6 +110,7 @@ LightBinding::bindLeToVal(this, someString, ui->leEditor) ;
 	// ui->leEditor - QLineEdit that will be binded to our value
 </code></pre>
 6. If you want to bind value and read it from another thread, just pass the mutex
+<pre><code>
 LightBinding::bindChbToVal(this, someBool, m_mutex, ui->chbEditor) ;
 	// this -  QObject* which will be used as context for connections
 	// someBool - boolean value that will be binded. Make sure it will not get out of scope!
