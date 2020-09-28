@@ -1,13 +1,19 @@
 ﻿# Description
 Whole library consists of two parts. BindedSettings and LightBinding.    
-BindedSettings has following possibilities
+BindedSettings has following possibilities:
 * Qt widgets can be binded to values, marked as properties, that provides their auto update when widget's control triggered. Works in opposite way either.
 * Auto loading and saving for properties in constructor and destructor of object inherited from BindedSettings class
 Watch example in settingsbinder.pro
 
-LightBinding is static and has following possibilites 
+LightBinding is static and has following possibilites:
 * Most values can be binded to popular widgets. Has two options: From and To. Binding functions with word "from" will update binding value from current widget's values; "to" will update widget's values from binding value.
 * Binding can take a mutex reference as argument for cases when binding values could be read from another thread.
+
+It's still lacks some support for widgets (like QTabWidget), and some code might be outdated. 
+
+# TLDR
+Use BindedSettings for auto saving and if you want using Q_PROPERTY (for qml also)
+Use LightBinding if you want to save by yourself and don't want huge property construction. 
 
 # Using BindedSettings
 For using library u need to do following actions:
