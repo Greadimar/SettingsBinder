@@ -465,31 +465,31 @@ bool BindedSettings::stringFromVariant(const QVariant &val, QString &result, Bin
             while (result.count() < 8) result.prepend("0");
             //result.prepend("0x");
         }
-        return isOk = true;
+        return true;
     }
     if (t == QVariant::Type::Int){
         result = QString::number(val.toInt(), static_cast<int>(type));
-        return isOk = true;
+        return true;
     }
     if (t == QVariant::Type::Double){
         result = QString::number(val.toDouble());
-        return isOk = true;
+        return true;
     }
     if (static_cast<QMetaType::Type>(t) == QMetaType::Long){
         result = QString::number(val.toLongLong());
-        return isOk = true;
+        return true;
     }
     if (static_cast<QMetaType::Type>(t) == QMetaType::Short){
         result = QString::number(val.toInt());
-        return isOk = true;
+        return true;
     }
     if (static_cast<QMetaType::Type>(t) == QMetaType::UShort){
         result = QString::number(val.toUInt());
-        return isOk = true;
+        return true;
     }
     if (t == QVariant::Type::String){
         result = val.toString();
-        return isOk = true;
+        return true;
     }
     return isOk;
 }

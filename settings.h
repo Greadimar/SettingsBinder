@@ -122,6 +122,7 @@ public:
     QString strForLe;
     double dblForLe;
     bool boolForChb;
+    bool boolForAct;
     enum class s {
         s1,
         s2,
@@ -130,16 +131,17 @@ public:
     int intForSb;
     double dblForDsb;
     QVector<QVariant> getVar(){
-        return QVector<QVariant>{uintHexForLe, shortForLe, dblForLe, boolForChb, intForSb, dblForDsb};
+        return QVector<QVariant>{uintHexForLe, shortForLe, dblForLe, boolForChb, intForSb, dblForDsb, boolForAct};
     }
     void setVars(const QVector<QVariant>& v){
-        if (v.size() < 6) return;
+        if (v.size() < 7) return;
         uintHexForLe = v.at(0).toUInt();
         shortForLe = static_cast<short>(v.at(1).toInt());
         dblForLe = v.at(2).toDouble();
         boolForChb = v.at(3).toBool();
         intForSb = v.at(4).toInt();
         dblForDsb = v.at(5).toDouble();
+        boolForAct = v.at(6).toBool();
     }
 };
 

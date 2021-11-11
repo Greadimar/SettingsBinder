@@ -36,7 +36,7 @@ void SSaver::load(QObject *target, QString fileName)
     for (QString& propName: propNames){
         QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(propName.toLocal8Bit().data()));
         if (debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
-        QVariant value = qsets.value(propName);
+        QVariant value = qsets.value(propName, metaProp.read(target));
         if (debugSs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
         if (!value.isNull()){
             metaProp.write(target, value);
