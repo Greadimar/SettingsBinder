@@ -1,4 +1,9 @@
 # Description
+settingsbinder.pro - example
+settingsbinder.pri - library
+
+Requires c++17, otherwise needs sfinae implementations
+
 Whole library consists of two parts. BindedSettings and LightBinding    
 BindedSettings has following possibilities
 * Qt widgets can be binded to values, marked as properties, that provides their auto update when widget's control triggered. Works in opposite way either.
