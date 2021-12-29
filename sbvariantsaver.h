@@ -5,16 +5,17 @@
 #include <QMetaMethod>
 #include <QMetaProperty>
 #include <QDebug>
-constexpr bool debugSs{false};
 
-namespace SSaver {
-    void save(QObject *target,
+
+namespace SbVariantSaver {
+    constexpr bool debugSs{false};
+    void saveAllProperties(QObject *target,
                         QString fileName = QDir::currentPath() + "/settings.ini");
-    void load(QObject *target,
+    void loadAllProperties(QObject *target,
                         QString fileName = QDir::currentPath() + "/settings.ini");
-    void saveVec(const QVector<QVariant> &vars, QString groupName = "",
+    void saveVarVec(const QVector<QVariant> &vars, QString groupName = "",
                  QString fileName = QDir::currentPath() + "/settings.ini");
-    QVector<QVariant> loadVec(QString groupName = "", QString fileName = QDir::currentPath() + "/settings.ini");
+    QVector<QVariant> loadVarVec(QString groupName = "", QString fileName = QDir::currentPath() + "/settings.ini");
 
     void loadFromPath(QObject *target, QString path, QString extraGroupKey = "");
     /*void saveChildren(QObject *target);

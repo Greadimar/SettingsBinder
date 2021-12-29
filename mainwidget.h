@@ -31,10 +31,6 @@ private:
     bool yes = true;
 
     QButtonGroup* btngrpStates;
-    template <class T>
-    void saveEveryField(T& t);
-        template <class T>
-    void loadEveryField(T& t);
 };
 
 #endif // MAINWIDGET_H

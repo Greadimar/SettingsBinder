@@ -14,7 +14,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     QLineEdit* le = targetWt;
     //getting metaproperty
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
-    if (debugBs) qDebug() << metaObject()->indexOfProperty(propertyName);
+    if constexpr(debugBs) qDebug() << metaObject()->indexOfProperty(propertyName);
     if (!mp.isStored(this)){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;
@@ -31,7 +31,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     }
     //setting up readValue lamda
     auto reader = [=](QObject* obj) -> bool{
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" reading val from settings " << mp.read(this);
+        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<" reading val from settings " << mp.read(this);
         QString newText;
         QLineEdit* target = qobject_cast<QLineEdit*>(obj);
         if (stringFromVariant(mp.read(this), newText, t)){
@@ -51,7 +51,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     //connecting textEdited and write method of property
     if (mp.isWritable()){
         connect(le, &QLineEdit::textChanged, this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on textEdit changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on textEdit changing property";
             QVariant var(mp.type());
             if (stringToVariant(le->text(), var, t)){
                 mp.write(this, var);
@@ -93,7 +93,7 @@ bool BindedSettings::bindWtToProp(QSpinBox *targetWt, const char *propertyName)
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(sb, qOverload<int>(&QSpinBox::valueChanged), this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on spinBox changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on spinBox changing property";
             QVariant var(sb->value());
             mp.write(this, var);
         });
@@ -130,7 +130,7 @@ bool BindedSettings::bindWtToProp(QDoubleSpinBox *targetWt, const char *property
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on double SpinBox changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on double SpinBox changing property";
             QVariant var(dsb->value());
             mp.write(this, var);
         });
@@ -166,7 +166,7 @@ bool BindedSettings::bindWtToProp(QCheckBox *targetWt, const char *propertyName)
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(chb, &QCheckBox::toggled, this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QCheckBox changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QCheckBox changing property";
             QVariant var(chb->isChecked());
             mp.write(this, var);
             signal.invoke(this);
@@ -197,7 +197,8 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
             QString name;
             if (mpHasTranslation(mp)){
                 auto tr = getEnumTranslation(mp);
-                name = tr.enumToStr(me.keyToValue(me.key(i)));
+                if (tr)
+                    name = tr->enumToStr(me.keyToValue(me.key(i)));
             }
             else {
                 const char* s = me.key(i);
@@ -214,7 +215,8 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
             if (mpHasTranslation(mp)){
                 auto tr = getEnumTranslation(mp);
                 QVariant var = mp.read(this);
-                name = tr.enumToStr(var);
+                if (tr)
+                    name = tr->enumToStr(var);
             }
             else{
                 QMetaEnum me = mp.enumerator();
@@ -245,12 +247,13 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
             QVariant var;
             if (mp.isEnumType()){
                 if (mpHasTranslation(mp)){
                     auto tr = getEnumTranslation(mp);
-                    var = tr.strToEnum(cb->currentText());
+                    if (tr)
+                        var = tr->strToEnum(cb->currentText());
                 }
                 else{
                     var = QVariant(cb->currentText());
@@ -305,7 +308,7 @@ bool BindedSettings::bindWtToProp(QTabWidget *targetWt, const char *propertyName
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(tw, &QTabWidget::currentChanged, this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QTabWidget changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QTabWidget changing property";
             QVariant var;
             if (mp.type() == QVariant::Int){
                 var = QVariant(tw->currentIndex());
@@ -356,7 +359,7 @@ bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyNa
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(btnGrp, qOverload<int>(&QButtonGroup::buttonClicked), this, [=](){
-            if (debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
+            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
             QVariant var;
             if (mp.isEnumType()){
                 QMetaEnum me = mp.enumerator();
@@ -579,17 +582,17 @@ void BindedSettings::invokeReader()
 {
     int signalIdx = QObject::senderSignalIndex();
     if (signalIdx == -1){
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" was called directly, not from slot";
+        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<" was called directly, not from slot";
     }
     QMetaMethod metaSignal = QObject::sender()->metaObject()->method(signalIdx);
     QString propName = QString::fromStdString(metaSignal.name().toStdString()).chopped(7);        //7 means "changed" of signal name;
     ReaderStruct rs = bindedMap.value(propName);
     if (rs.isEmpty){
-        if (debugBs) qDebug()<<Q_FUNC_INFO<<" no binded value to such property";
+        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<" no binded value to such property";
         return;
     }
     if (!rs.reader(rs.obj))
-        if (debugBs) qDebug()<<Q_FUNC_INFO << " reader returned false, can't read property to object";
+        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO << " reader returned false, can't read property to object";
 }
 
 bool BindedSettings::addEnumTranslation(std::function<QString (QVariant)> enumToStr, std::function<QVariant(QString)> strToEnum, const char *propertyName)
@@ -614,15 +617,15 @@ bool BindedSettings::addEnumTranslation(std::function<QString (QVariant)> enumTo
 
 void BindedSettings::save()
 {
-    if (debugBs) qDebug()<<Q_FUNC_INFO;
-    SSaver::save(this);
+    if constexpr(debugBs) qDebug()<<Q_FUNC_INFO;
+    SbVariantSaver::saveAllProperties(this);
 
 }
 
 void BindedSettings::load()
 {
-    if (debugBs) qDebug()<<Q_FUNC_INFO;
-    SSaver::load(this);
+    if constexpr(debugBs) qDebug()<<Q_FUNC_INFO;
+    SbVariantSaver::loadAllProperties(this);
 
 }
 
@@ -638,10 +641,11 @@ bool BindedSettings::mpHasTranslation(QMetaProperty mp)
     return false;
 }
 
-BindedSettings::Translation & BindedSettings::getEnumTranslation(QMetaProperty mp)
+BindedSettings::Translation* BindedSettings::getEnumTranslation(QMetaProperty mp)
 {
     for (auto& val: enumTranslations){
-        if (val.mp.name() == mp.name()) return val;
+        if (val.mp.name() == mp.name()) return &val;
     }
     assert(false);
+    return nullptr;
 }

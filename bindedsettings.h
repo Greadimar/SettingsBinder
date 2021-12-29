@@ -17,13 +17,14 @@
 #include <QDir>
 #include <QDebug>
 #include <functional>
-#include "ssaver.h"
-constexpr bool debugBs{false};
+#include "sbvariantsaver.h"
+
 
 class BindedSettings: public QObject
 {
     Q_OBJECT
 public:
+    static constexpr bool debugBs{false};
     enum class IntType{
         decimal = 10,
         hex = 16,
@@ -138,7 +139,7 @@ private:
     };
     QVector<Translation> enumTranslations;
     bool mpHasTranslation(QMetaProperty mp);
-    Translation& getEnumTranslation(QMetaProperty mp);
+    Translation *getEnumTranslation(QMetaProperty mp);
     void fillSupportedLits();
     const QMetaObject* getMeta(const QObject* obj){
         return obj->metaObject();

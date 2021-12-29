@@ -1,10 +1,10 @@
-#include "ssaver.h"
+#include "sbvariantsaver.h"
 
 
-void SSaver::save(QObject *target, QString fileName)
+void SbVariantSaver::saveAllProperties(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
-    if (debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
+    if constexpr(debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
     QSettings qsets(fileName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
@@ -25,30 +25,30 @@ void SSaver::save(QObject *target, QString fileName)
     qsets.endGroup();
 }
 
-void SSaver::load(QObject *target, QString fileName)
+void SbVariantSaver::loadAllProperties(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
-    if (debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
+    if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
     QString setsName(fileName);
     QSettings qsets(setsName, QSettings::IniFormat);
     qsets.beginGroup(target->objectName());
     for (QString& propName: propNames){
         QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(propName.toLocal8Bit().data()));
-        if (debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
+        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
         QVariant value = qsets.value(propName, metaProp.read(target));
-        if (debugSs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
+        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
         if (!value.isNull()){
             metaProp.write(target, value);
         }
         QMetaMethod signal = metaProp.notifySignal();
-        if (debugSs) qDebug()<<Q_FUNC_INFO<<" check loading signal: type:"<<signal.typeName() << ", is valid: "<<signal.isValid()<<", signature: " <<signal.methodSignature();
+        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" check loading signal: type:"<<signal.typeName() << ", is valid: "<<signal.isValid()<<", signature: " <<signal.methodSignature();
         bool emitted = signal.invoke(target);
-        if (debugSs) qDebug()<<Q_FUNC_INFO<<" signal emitted: "<<emitted;
+        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" signal emitted: "<<emitted;
     }
     qsets.endGroup();
 }
-void SSaver::saveVec(const QVector<QVariant> &vars, QString groupName, QString fileName)
+void SbVariantSaver::saveVarVec(const QVector<QVariant> &vars, QString groupName, QString fileName)
 {
     QSettings qsets(fileName, QSettings::IniFormat);
     qsets.beginGroup(groupName);
@@ -62,7 +62,7 @@ void SSaver::saveVec(const QVector<QVariant> &vars, QString groupName, QString f
     qsets.sync();
 }
 
-QVector<QVariant> SSaver::loadVec(QString groupName, QString fileName)
+QVector<QVariant> SbVariantSaver::loadVarVec(QString groupName, QString fileName)
 {
     QSettings qsets(fileName, QSettings::IniFormat);
     qsets.beginGroup(groupName);

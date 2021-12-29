@@ -6,18 +6,17 @@ QMAKE_CXXFLAGS += -std=c++17
 
 SOURCES += \
     $$PWD/bindedsettings.cpp \
+    $$PWD/sbvariantsaver.cpp \
     $$PWD/simplereflex.cpp \
-    $$PWD/ssaver.cpp \
     $$PWD/lightbinding.cpp
 HEADERS += \
     $$PWD/bindedsettings.h \
     $$PWD/lightbinding.h \
-    $$PWD/simplereflex.h \
-    $$PWD/ssaver.h
-}
+    $$PWD/sbvariantsaver.h \
+    $$PWD/simplereflex.h
+
 
 HEADERS += \
-    $$PWD/autosaver.h \
     $$PWD/lightbindings/actions.h \
     $$PWD/lightbindings/buttongroups.h \
     $$PWD/lightbindings/checkboxes.h \
@@ -25,5 +24,7 @@ HEADERS += \
     $$PWD/lightbindings/lineedits.h \
     $$PWD/lightbindings/notsupported.h \
     $$PWD/lightbindings/radiobuttons.h \
-    $$PWD/lightbindings/spinboxes.h
+    $$PWD/lightbindings/spinboxes.h \
+    $$PWD/sbautosaver.h
 
+}
