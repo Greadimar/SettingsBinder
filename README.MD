@@ -106,8 +106,7 @@ namespace SomeNamespace{
 3. include "settingsbinder/lightbinding.h"
 4. If you need to bind value and update it to widget type following:
 <pre><code>
-        LightBinding::bindSbFromVal(this, someintval, ui->sbEditor);
-        // this -  QObject* which will be used as context for connections
+        LightBinding::bindSbFromVal(someintval, ui->sbEditor);
         // someintval - integer value that will be binded. Make sure it will not get out of scope!
         // ui->sbEditor - QSpinBox that will be binded to our value	
 </code></pre>
