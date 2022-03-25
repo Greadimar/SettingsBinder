@@ -36,16 +36,16 @@ inline void updateLeToVal(TVal& val, QString txt, QMutex& m){
     updateLeToVal(val, txt);
 }
 template <typename TVal>
-inline QLineEdit* bindLeToVal(QObject* connector, TVal& val , QLineEdit* le = nullptr){
+inline QLineEdit* bindLeToVal(TVal& val , QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&val](const QString& txt){updateLeToVal(val, txt);});
+    le->connect(le, &QLineEdit::textChanged, [&val](const QString& txt){updateLeToVal(val, txt);});
     updateLeToVal(val, le->text());
     return le;
 };
 template <typename TVal>
-inline QLineEdit* bindLeToVal(QObject* connector, TVal& val , QMutex& m, QLineEdit* le = nullptr){
+inline QLineEdit* bindLeToVal(TVal& val , QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToVal(val,txt, m);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToVal(val,txt, m);});
     updateLeToVal(val, le->text(), m);
     return le;
 };
@@ -67,17 +67,17 @@ inline bool updateLeFromVal(TVal& val, QLineEdit* le, QMutex& m){
     return updateLeFromVal(val, le);
 };
 template <typename TVal>
-inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val , QLineEdit* le = nullptr){
+inline QLineEdit* bindLeFromVal(TVal& val , QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToVal(val, txt);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToVal(val, txt);});
     updateLeFromVal(val, le);
     return le;
 }
 
 template <typename TVal>
-inline QLineEdit* bindLeFromVal(QObject* connector, TVal& val, QMutex& m, QLineEdit* le = nullptr){
+inline QLineEdit* bindLeFromVal(TVal& val, QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToVal(val, txt, m);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToVal(val, txt, m);});
     updateLeFromVal(val, le, m);
     return le;
 };
@@ -107,31 +107,31 @@ inline void updateLeFromHex(TVal& val, QLineEdit* le, QMutex& m){
     updateLeFromHex(val, le);
 }
 template<typename TVal>
-inline QLineEdit* bindLeToHex(QObject* connector, TVal& val , QLineEdit* le = nullptr){
+inline QLineEdit* bindLeToHex(TVal& val , QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToHex(val, txt);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToHex(val, txt);});
     updateLeToHex(val, le->text());
     return le;
 };
 template<typename TVal>
-inline QLineEdit* bindLeToHex(QObject* connector, TVal& val, QMutex& m, QLineEdit* le = nullptr){
+inline QLineEdit* bindLeToHex(TVal& val, QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToHex(val, txt, m);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToHex(val, txt, m);});
     updateLeToHex(val, le->text(), m);
     return le;
 };
 template <typename TVal>
-inline QLineEdit* bindLeFromHex(QObject* connector, TVal& val , QLineEdit* le = nullptr){
+inline QLineEdit* bindLeFromHex(TVal& val , QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
 
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToHex(val, txt);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeToHex(val, txt);});
     updateLeFromHex(val, le);
     return le;
 };
 template <typename TVal>
-inline QLineEdit* bindLeFromHex(QObject* connector, TVal& val, QMutex& m, QLineEdit* le = nullptr){
+inline QLineEdit* bindLeFromHex(TVal& val, QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    connector->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeFromHex(val, txt, m);});
+    le->connect(le, &QLineEdit::textChanged, [&](const QString& txt){updateLeFromHex(val, txt, m);});
     updateLeFromHex(val, le, m);
     return le;
 };

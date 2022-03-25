@@ -50,48 +50,48 @@ inline void updateCbFromVal(const std::atomic<TVal>& val, QComboBox* cb){
         cb->setCurrentIndex(static_cast<int>(curVal));
 }
 template <typename TVal>
-inline QComboBox* bindCbToVal(QObject* connector, TVal& val, QComboBox* cb = nullptr){
+inline QComboBox* bindCbToVal(TVal& val, QComboBox* cb = nullptr){
     static_assert (std::is_enum<TVal>::value || std::is_integral<TVal>::value, "This type is not supported");
     if (!cb) cb = new QComboBox();
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
+    cb->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
     updateCbToVal(val, cb->currentIndex());
     return cb;
 }
 template <typename TVal>
-inline QComboBox* bindCbToVal(QObject* connector, TVal& val, QMutex& m, QComboBox* cb = nullptr){
+inline QComboBox* bindCbToVal(TVal& val, QMutex& m, QComboBox* cb = nullptr){
     static_assert (std::is_enum<TVal>::value || std::is_integral<TVal>::value, "This type is not supported");
     if (!cb) cb = new QComboBox();
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal, m);});
+    cb->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal, m);});
     updateCbToVal(val, cb->currentIndex(), m);
     return cb;
 }
 template <typename TVal>
-inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QComboBox* cb = nullptr){
+inline QComboBox* bindCbFromVal(TVal& val, QComboBox* cb = nullptr){
     if (!cb) cb = new QComboBox();
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
+    cb->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
     updateCbFromVal(val, cb);
     return cb;
 }
 template <typename TVal>
-inline QComboBox* bindCbFromVal(QObject* connector, TVal& val, QMutex& m, QComboBox* cb = nullptr){
+inline QComboBox* bindCbFromVal(TVal& val, QMutex& m, QComboBox* cb = nullptr){
     if (!cb) cb = new QComboBox();
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal, m);});
+    cb->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal, m);});
     updateCbFromVal(val, cb, m);
     return cb;
 }
 template <typename TVal>
-inline QComboBox* bindCbToVal(QObject* connector, std::atomic<TVal>& val, QComboBox* cb = nullptr){
+inline QComboBox* bindCbToVal(std::atomic<TVal>& val, QComboBox* cb = nullptr){
     static_assert (std::is_enum<TVal>::value || std::is_integral<TVal>::value, "This type is not supported");
     if (!cb) cb = new QComboBox();
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
+    cb->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
     updateCbToVal(val, cb->currentIndex());
     return cb;
 }
 template <typename TVal>
-inline QComboBox* bindCbFromVal(QObject* connector, std::atomic<TVal>& val, QComboBox* cb = nullptr){
+inline QComboBox* bindCbFromVal(std::atomic<TVal>& val, QComboBox* cb = nullptr){
     static_assert (std::is_enum<TVal>::value || std::is_integral<TVal>::value, "This type is not supported");
     if (!cb) cb = new QComboBox();
-    connector->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
+    cb->connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), [&](int changedVal){updateCbToVal(val, changedVal);});
     updateCbFromVal(val, cb);
     return cb;
 }

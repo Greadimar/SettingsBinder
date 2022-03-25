@@ -149,7 +149,9 @@ constexpr auto size_(tag<0>)
 template <typename T>
 constexpr std::size_t size_s()
 {
+#if __cplusplus >= 201703L
     static_assert(std::is_aggregate_v<T>, "your struct is not aggregate ({}), correct it or use boost.PFR instead");
+#endif
     return size_<T>(tag<25>{}); // highest supported number
 }
 
@@ -157,8 +159,9 @@ constexpr std::size_t size_s()
 template <typename T>
 auto as_tuple(T const& v)
 {
-  static_assert(std::is_aggregate_v<T>);
-
+#if __cplusplus >= 201703L
+   static_assert(std::is_aggregate_v<T>);
+#endif
   if constexpr (size_s<T>() == 30u){
       const auto& [m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20, m21, m22, m23, m24, m25, m26, m27, m28, m29, m30] = v;
       return std::tie(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20, m21, m22, m23, m24, m25, m26, m27, m28, m29, m30);
@@ -287,7 +290,9 @@ auto as_tuple(T const& v)
 template <typename T, typename F>
 void for_each_member(T & v, F f)
 {
+#if __cplusplus >= 201703L
 static_assert(std::is_aggregate_v<T>);
+#endif
 if constexpr (size_s<T>() == 30u){
     auto& [m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20, m21, m22, m23, m24, m25, m26, m27, m28, m29] = v;
     f(m0); f(m1); f(m2); f(m3); f(m4); f(m5); f(m6); f(m7); f(m8); f(m9);  f(m10); f(m11); f(m12); f(m13); f(m14); f(m15); f(m16); f(m17);

@@ -23,7 +23,8 @@ void loadEveryField(T &t, const QString groupName = typeid (T()).name(), const Q
     int i = 0;
     SimpleReflex::for_each_member(t, [&i, &sets](auto& member) mutable{
         //add check for enum class
-        member = sets.value(QString("field_%1_%2").arg(typeid(member).name()).arg(i++)).value<typename std::remove_reference<decltype (member)>::type>();
+        member = sets.value(QString("field_%1_%2").arg(typeid(member).name())
+                            .arg(i++), member).template value<typename std::remove_reference<decltype (member)>::type>();
     });
     sets.endGroup();
 }

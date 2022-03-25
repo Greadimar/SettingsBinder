@@ -32,14 +32,13 @@ template<typename TVal>
     }
 
 template<typename TVal>
-    inline QAction* bindActToVal(QObject* connector, TVal& val, QAction* act = nullptr) {
+    inline QAction* bindActToVal(TVal& val, QAction* act = nullptr) {
         static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
         if (!act)
             act = new QAction();
 
         act->setCheckable(true);
-
-        connector->connect(act, &QAction::triggered, [&](bool checked){
+        act->connect(act, &QAction::triggered, [&](bool checked){
             updateActToVal(val, checked);
         });
         updateActToVal(val, act->isChecked());
@@ -47,14 +46,14 @@ template<typename TVal>
     }
 
 template<typename TVal>
-    inline QAction* bindActToVal(QObject* connector, TVal& val, QMutex& m, QAction* act = nullptr) {
+    inline QAction* bindActToVal(TVal& val, QMutex& m, QAction* act = nullptr) {
         static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
         if (!act)
             act = new QAction();
 
         act->setCheckable(true);
 
-        connector->connect(act, &QAction::triggered, [&](bool checked){
+        act->connect(act, &QAction::triggered, [&](bool checked){
             updateActToVal(val, checked, m);
         });
         updateActToVal(val, act->isChecked(), m);
@@ -62,14 +61,14 @@ template<typename TVal>
     }
 
 template<typename TVal>
-    inline QAction* bindActFromVal(QObject* connector, TVal& val, QAction* act = nullptr) {
+    inline QAction* bindActFromVal(TVal& val, QAction* act = nullptr) {
         static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
         if (!act)
             act = new QAction();
 
         act->setCheckable(true);
 
-        connector->connect(act, &QAction::triggered, [&](bool checked){
+        act->connect(act, &QAction::triggered, [&](bool checked){
             updateActToVal(val, checked);
         });
         updateActFromVal(val, act);
@@ -77,14 +76,14 @@ template<typename TVal>
     }
 
 template<typename TVal>
-    inline QAction* bindActFromVal(QObject* connector, TVal& val, QMutex& m, QAction* act = nullptr) {
+    inline QAction* bindActFromVal(TVal& val, QMutex& m, QAction* act = nullptr) {
         static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
         if (!act)
             act = new QAction();
 
         act->setCheckable(true);
 
-        connector->connect(act, &QAction::triggered, [&](bool checked){
+        act->connect(act, &QAction::triggered, [&](bool checked){
             updateActToVal(val, checked, m);
         });
         updateActFromVal(val, act, m);

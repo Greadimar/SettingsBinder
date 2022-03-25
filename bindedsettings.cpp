@@ -626,12 +626,7 @@ void BindedSettings::load()
 {
     if constexpr(debugBs) qDebug()<<Q_FUNC_INFO;
     SbVariantSaver::loadAllProperties(this);
-
 }
-
-
-
-
 
 bool BindedSettings::mpHasTranslation(QMetaProperty mp)
 {

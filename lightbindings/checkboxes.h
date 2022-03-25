@@ -29,40 +29,40 @@ inline void updateChbFromVal(TVal& val, QCheckBox* chb, QMutex& m){
 }
 
 template <typename TVal>
-inline QCheckBox* bindChbToVal(QObject* connector, TVal& val, QCheckBox* chb = nullptr){
+inline QCheckBox* bindChbToVal(TVal& val, QCheckBox* chb = nullptr){
     static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
     if (!chb) chb = new QCheckBox();
-    connector->connect(chb, &QCheckBox::toggled, [&](bool checked){
+    chb->connect(chb, &QCheckBox::toggled, [&](bool checked){
         updateChbToVal(val, checked);
     });
     updateChbToVal(val, chb->isChecked());
     return chb;
 }
 template <typename TVal>
-inline QCheckBox* bindChbToVal(QObject* connector, TVal& val, QMutex& m, QCheckBox* chb = nullptr){
+inline QCheckBox* bindChbToVal(TVal& val, QMutex& m, QCheckBox* chb = nullptr){
     static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
     if (!chb) chb = new QCheckBox();
-    connector->connect(chb, &QCheckBox::toggled, [&](bool checked){
+    chb->connect(chb, &QCheckBox::toggled, [&](bool checked){
         updateChbToVal(val, checked, m);
     });
     updateChbToVal(val, chb->isChecked(), m);
     return chb;
 }
 template <typename TVal>
-inline QCheckBox* bindChbFromVal(QObject* connector, TVal& val, QCheckBox* chb = nullptr){
+inline QCheckBox* bindChbFromVal(TVal& val, QCheckBox* chb = nullptr){
     static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
     if (!chb) chb = new QCheckBox();
-    connector->connect(chb, &QCheckBox::toggled, [&](bool checked){
+    chb->connect(chb, &QCheckBox::toggled, [&](bool checked){
         updateChbToVal(val, checked);
     });
     updateChbFromVal(val, chb);
     return chb;
 }
 template <typename TVal>
-inline QCheckBox* bindChbFromVal(QObject* connector, TVal& val, QMutex& m, QCheckBox* chb = nullptr){
+inline QCheckBox* bindChbFromVal(TVal& val, QMutex& m, QCheckBox* chb = nullptr){
     static_assert (std::is_convertible<TVal, bool>::value, "This type is not supported");
     if (!chb) chb = new QCheckBox();
-    connector->connect(chb, &QCheckBox::toggled, [&](bool checked){
+    chb->connect(chb, &QCheckBox::toggled, [&](bool checked){
         updateChbToVal(val, checked, m);
     });
     updateChbFromVal(val, chb, m);

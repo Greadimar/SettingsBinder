@@ -59,17 +59,17 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->leUintL->setText("15");
     ui->leStringL->setText("Some");
     ui->leIntL->setText("15");
-    LightBinding::bindLeToVal(this, ls.intForLe, ui->leIntL);
-    LightBinding::bindLeToVal(this, ls.uintForLe, ui->leUintL);
-    LightBinding::bindLeToVal(this, ls.strForLe, ui->leStringL);
+    LightBinding::bindLeToVal(ls.intForLe, ui->leIntL);
+    LightBinding::bindLeToVal(ls.uintForLe, ui->leUintL);
+    LightBinding::bindLeToVal(ls.strForLe, ui->leStringL);
 
     ls.setVars(SbVariantSaver::loadVarVec("LightSettings"));
-    LightBinding::bindLeFromVal(this, ls.shortForLe, ui->leShortL);
-    LightBinding::bindLeFromHex(this, ls.uintHexForLe, ui->leUintHexL);
-    LightBinding::bindSbFromVal(this, ls.intForSb, ui->sbIntL);
-    LightBinding::bindLeFromVal(this, ls.dblForLe, ui->leDoubleL);
-    LightBinding::bindDsbFromVal(this, ls.dblForDsb, ui->dsbDoubleL);
-    LightBinding::bindChbFromVal(this, ls.boolForChb, ui->chbL);
+    LightBinding::bindLeFromVal(ls.shortForLe, ui->leShortL);
+    LightBinding::bindLeFromHex(ls.uintHexForLe, ui->leUintHexL);
+    LightBinding::bindSbFromVal(ls.intForSb, ui->sbIntL);
+    LightBinding::bindLeFromVal(ls.dblForLe, ui->leDoubleL);
+    LightBinding::bindDsbFromVal(ls.dblForDsb, ui->dsbDoubleL);
+    LightBinding::bindChbFromVal(ls.boolForChb, ui->chbL);
 
     // testing saving core
     Test t;

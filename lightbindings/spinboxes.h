@@ -42,18 +42,18 @@ inline void updateSbFromVal(TVal& val, QSpinBox* sb, QMutex& m){
     updateSbFromVal(val, sb);
 }
 template <typename TVal>
-inline QSpinBox* bindSbToVal(QObject* connector, TVal& val , QSpinBox* sb = nullptr){
+inline QSpinBox* bindSbToVal(TVal& val , QSpinBox* sb = nullptr){
     if (!sb) sb = new QSpinBox();
-    connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
+    sb->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
         updateSbToVal(val, changedVal);
     });
     updateSbToVal(val, sb->value());
     return sb;
 }
 template <typename TVal>
-inline QSpinBox* bindSbToVal(QObject* connector, TVal& val, QMutex& m, QSpinBox* sb = nullptr){
+inline QSpinBox* bindSbToVal(TVal& val, QMutex& m, QSpinBox* sb = nullptr){
     if (!sb) sb = new QSpinBox();
-    connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
+    sb->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
         updateSbToVal(val, changedVal, m);
     });
     updateSbToVal(val, sb->value(), m);
@@ -61,9 +61,9 @@ inline QSpinBox* bindSbToVal(QObject* connector, TVal& val, QMutex& m, QSpinBox*
 }
 
 template <typename TVal>
-inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QSpinBox* sb = nullptr){
+inline QSpinBox* bindSbFromVal(TVal& val , QSpinBox* sb = nullptr){
     if (!sb) sb = new QSpinBox();
-    connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
+    sb->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
         updateSbToVal(val, changedVal);
     });
     updateSbFromVal(val, sb);
@@ -71,9 +71,9 @@ inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QSpinBox* sb = nu
 }
 
 template <typename TVal>
-inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QMutex& m, QSpinBox* sb = nullptr){
+inline QSpinBox* bindSbFromVal(TVal& val , QMutex& m, QSpinBox* sb = nullptr){
     if (!sb) sb = new QSpinBox();
-    connector->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
+    sb->connect(sb, qOverload<int>(&QSpinBox::valueChanged), [&](int changedVal){
         updateSbToVal(val, changedVal, m);
     });
     updateSbFromVal(val, sb, m);
@@ -82,7 +82,7 @@ inline QSpinBox* bindSbFromVal(QObject* connector, TVal& val , QMutex& m, QSpinB
 
 //binding double spin box
 template <typename TVal>
-inline void updateDsbToVal(TVal& val, int changedVal){
+inline void updateDsbToVal(TVal& val, double changedVal){
     if constexpr (std::is_floating_point<TVal>::value){
         val = static_cast<TVal>(changedVal);
     }
@@ -91,7 +91,7 @@ inline void updateDsbToVal(TVal& val, int changedVal){
     }
 }
 template <typename TVal>
-inline void updateDsbToVal(TVal& val, int changedVal, QMutex& m){
+inline void updateDsbToVal(TVal& val, double changedVal, QMutex& m){
     QMutexLocker ml(&m);
     updateDsbToVal(val, changedVal);
 }
@@ -110,36 +110,36 @@ inline void updateDsbFromVal(TVal& val, QDoubleSpinBox* dsb, QMutex& m){
     updateDsbFromVal(val, dsb);
 }
 template <typename TVal>
-inline QDoubleSpinBox* bindDsbToVal(QObject* connector, TVal& val, QDoubleSpinBox* dsb = nullptr){
+inline QDoubleSpinBox* bindDsbToVal(TVal& val, QDoubleSpinBox* dsb = nullptr){
     if (!dsb) dsb = new QDoubleSpinBox();
-    connector->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
+    dsb->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
         updateDsbToVal(val, changedVal);
     });
     updateDsbToVal(val, dsb);
     return dsb;
 }
 template <typename TVal>
-inline QDoubleSpinBox* bindDsbToVal(QObject* connector, TVal& val, QMutex& m, QDoubleSpinBox* dsb = nullptr){
+inline QDoubleSpinBox* bindDsbToVal(TVal& val, QMutex& m, QDoubleSpinBox* dsb = nullptr){
     if (!dsb) dsb = new QDoubleSpinBox();
-    connector->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
+    dsb->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
         updateDsbToVal(val, changedVal, m);
     });
     updateDsbToVal(val, dsb, m);
     return dsb;
 }
 template <typename TVal>
-inline QDoubleSpinBox* bindDsbFromVal(QObject* connector, TVal& val, QDoubleSpinBox* dsb = nullptr){
+inline QDoubleSpinBox* bindDsbFromVal(TVal& val, QDoubleSpinBox* dsb = nullptr){
     if (dsb == nullptr) dsb = new QDoubleSpinBox();
-    connector->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
+    dsb->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
         updateDsbToVal(val, changedVal);
     });
     updateDsbFromVal(val, dsb);
     return dsb;
 }
 template <typename TVal>
-inline QDoubleSpinBox* bindDsbFromVal(QObject* connector, TVal& val, QMutex& m, QDoubleSpinBox* dsb = nullptr){
+inline QDoubleSpinBox* bindDsbFromVal(TVal& val, QMutex& m, QDoubleSpinBox* dsb = nullptr){
     if (!dsb) dsb = new QDoubleSpinBox();
-    connector->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
+    dsb->connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), [&](double changedVal){
         updateDsbToVal(val, changedVal, m);
     });
     updateDsbFromVal(val, dsb, m);

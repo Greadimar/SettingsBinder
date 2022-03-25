@@ -25,33 +25,33 @@ inline void updateRbFromVal(TVal& val, QRadioButton* rb, QMutex& m){
     updateRbFromVal(val, rb);
 }
 
-inline QRadioButton* bindRbToVal(QObject* connector, bool& val, QRadioButton* rb = nullptr){
+inline QRadioButton* bindRbToVal(bool& val, QRadioButton* rb = nullptr){
     if (!rb) rb = new QRadioButton();
-    connector->connect(rb, &QRadioButton::toggled, [&](bool checked){
+    rb->connect(rb, &QRadioButton::toggled, [&](bool checked){
         updateRbToVal(val, checked);
     });
     updateRbToVal(val, rb->isChecked());
     return rb;
 }
-inline QRadioButton* bindRbToVal(QObject* connector, bool& val, QMutex&m, QRadioButton* rb = nullptr){
+inline QRadioButton* bindRbToVal(bool& val, QMutex&m, QRadioButton* rb = nullptr){
     if (!rb) rb = new QRadioButton();
-    connector->connect(rb, &QRadioButton::toggled, [&](bool checked){
+    rb->connect(rb, &QRadioButton::toggled, [&](bool checked){
         updateRbToVal(val, checked, m);
     });
     updateRbToVal(val, rb->isChecked(), m);
     return rb;
 }
-inline QRadioButton* bindRbFromVal(QObject* connector, bool& val, QRadioButton* rb = nullptr){
+inline QRadioButton* bindRbFromVal(bool& val, QRadioButton* rb = nullptr){
     if (!rb) rb = new QRadioButton();
-    connector->connect(rb, &QRadioButton::toggled, [&](bool checked){
+    rb->connect(rb, &QRadioButton::toggled, [&](bool checked){
         updateRbToVal(val, checked);
     });
     updateRbFromVal(val, rb);
     return rb;
 }
-inline QRadioButton* bindRbFromVal(QObject* connector, bool& val, QMutex& m, QRadioButton* rb = nullptr){
+inline QRadioButton* bindRbFromVal(bool& val, QMutex& m, QRadioButton* rb = nullptr){
     if (!rb) rb = new QRadioButton();
-    connector->connect(rb, &QRadioButton::toggled, [&](bool checked){
+    rb->connect(rb, &QRadioButton::toggled, [&](bool checked){
         updateRbToVal(val, checked, m);
     });
     updateRbFromVal(val, rb, m);

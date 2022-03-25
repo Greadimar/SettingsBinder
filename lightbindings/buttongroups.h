@@ -28,15 +28,15 @@ inline void updateBtnGrpFromVal(TVal& val, QButtonGroup* bgrp, QMutex& m){
 }
 
 template <typename TEnumVal>
-inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
-    if (!bgrp) bgrp = new QButtonGroup(connector);
+inline QButtonGroup* bindBtnGrpToVal(TEnumVal& val, QButtonGroup* bgrp){
+    if (!bgrp) bgrp = new QButtonGroup();
     static_assert (std::is_enum<TEnumVal>::value, "please, use enum or enum class to bind this button group");
 #if QT_VERSION >= 0x051500
     connector->connect(bgrp, &QButtonGroup::idToggled, [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId);
     });
 #else
-    connector->connect(bgrp, &QButtonGroup::buttonToggled, [&](int btnId, bool isToggled){
+    bgrp->connect(bgrp, &QButtonGroup::buttonToggled, [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId);
     });
 #endif
@@ -47,15 +47,15 @@ inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonG
 
 //from val
 template <typename TEnumVal>
-inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp){
-    if (!bgrp) bgrp = new QButtonGroup(connector);
+inline QButtonGroup* bindBtnGrpFromVal(TEnumVal& val, QButtonGroup* bgrp){
+    if (!bgrp) bgrp = new QButtonGroup();
     static_assert (std::is_enum<TEnumVal>::value, "please, use enum or enum class to bind this button group");
 #if QT_VERSION >= 0x051500
     connector->connect(bgrp, &QButtonGroup::idToggled, [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId);
     });
 #else
-    connector->connect(bgrp, qOverload<int, bool>(&QButtonGroup::buttonToggled), [&](int btnId, bool isToggled){
+    bgrp->connect(bgrp, qOverload<int, bool>(&QButtonGroup::buttonToggled), [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId);
     });
 #endif
@@ -64,15 +64,15 @@ inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButto
 }
 
 template <typename TEnumVal>
-inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp, QMutex& m){
-    if (!bgrp) bgrp = new QButtonGroup(connector);
+inline QButtonGroup* bindBtnGrpToVal(TEnumVal& val, QButtonGroup* bgrp, QMutex& m){
+    if (!bgrp) bgrp = new QButtonGroup();
     static_assert (std::is_enum<TEnumVal>::value, "please, use enum or enum class to bind this button group");
 #if QT_VERSION >= 0x051500
     connector->connect(bgrp, &QButtonGroup::idToggled, [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId);
     });
 #else
-    connector->connect(bgrp, qOverload<int, bool>(&QButtonGroup::buttonToggled), [&](int btnId, bool isToggled){
+    bgrp->connect(bgrp, qOverload<int, bool>(&QButtonGroup::buttonToggled), [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId, m);
     });
 #endif
@@ -83,15 +83,15 @@ inline QButtonGroup* bindBtnGrpToVal(QObject* connector, TEnumVal& val, QButtonG
 
 
 template <typename TEnumVal>
-inline QButtonGroup* bindBtnGrpFromVal(QObject* connector, TEnumVal& val, QButtonGroup* bgrp, QMutex& m){
-    if (!bgrp) bgrp = new QButtonGroup(connector);
+inline QButtonGroup* bindBtnGrpFromVal(TEnumVal& val, QButtonGroup* bgrp, QMutex& m){
+    if (!bgrp) bgrp = new QButtonGroup();
     static_assert (std::is_enum<TEnumVal>::value, "please, use enum or enum class to bind this button group");
 #if QT_VERSION >= 0x051500
     connector->connect(bgrp, &QButtonGroup::idToggled, [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId, m);
     });
 #else
-    connector->connect(bgrp, &QButtonGroup::buttonToggled, [&](int btnId, bool isToggled){
+    bgrp->connect(bgrp, &QButtonGroup::buttonToggled, [&](int btnId, bool isToggled){
         if (isToggled) updateBtnGrpToVal(val, btnId, m);
     });
 #endif
