@@ -147,7 +147,6 @@ inline void updateLeFromHex(TVal& val, QLineEdit* le, QMutex& m){
 template<typename TVal>
 inline QLineEdit* bindLeToHex(TVal& val , QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    //le->setInputMask("0xHhhhhhhh");
     le->setFont(QFont("courier", 11));
     le->connect(le, &QLineEdit::textEdited, [&](const QString& txt){
         QString curText = txt;
@@ -158,7 +157,6 @@ inline QLineEdit* bindLeToHex(TVal& val , QLineEdit* le = nullptr){
 template<typename TVal>
 inline QLineEdit* bindLeToHex(TVal& val, QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    //le->setInputMask("0xHhhhhhhh");
     le->setFont(QFont("courier", 11));
     le->connect(le, &QLineEdit::textEdited, [&](const QString& txt){
         QString curText = txt;
@@ -170,7 +168,6 @@ inline QLineEdit* bindLeToHex(TVal& val, QMutex& m, QLineEdit* le = nullptr){
 template <typename TVal>
 inline QLineEdit* bindLeFromHex(TVal& val , QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    //le->setInputMask("0xHhhhhhhh");
     le->setFont(QFont("courier", 11));
     le->connect(le, &QLineEdit::textEdited, [&, le](const QString& txt){
         QString curText = txt;
@@ -182,7 +179,6 @@ inline QLineEdit* bindLeFromHex(TVal& val , QLineEdit* le = nullptr){
 template <typename TVal>
 inline QLineEdit* bindLeFromHex(TVal& val, QMutex& m, QLineEdit* le = nullptr){
     if (!le) le = new QLineEdit();
-    //le->setInputMask("0xHhhhhhhhh");
     le->setFont(QFont("courier", 11));
     le->connect(le, &QLineEdit::textEdited, [&, le](const QString& txt){
         QString curText = txt;
