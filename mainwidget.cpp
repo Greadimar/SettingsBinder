@@ -4,30 +4,22 @@
 #include "lightbinding.h"
 #include "sbvariantsaver.h"
 #include "sbautosaver.h"
-struct Test{
-    enum Lol{
-        lol1, lol2, lol3
-    };
-    Lol lol{lol2};
-    int field1{0};
-    QString f2{"text"};
-    bool field3{false};
-    quint8 field4{2};
-
-};
+#include <QDataStream>
 
 
 
-Q_DECLARE_METATYPE(Test::Lol);
+
 
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWidget)
 {
     ui->setupUi(this);
-
+    qRegisterMetaType<Info>("Info");
+    qRegisterMetaTypeStreamOperators<Info>("Info");
     settings = new Settings(this);
-
+//    qRegisterMetaType<Lol>("Lol");
+//    qRegisterMetaTypeStreamOperators<Lol>("Lol");
     settings->load();
     settings->bindWtToProp(ui->leString, "stringForLe");
     settings->bindWtToProp(ui->leInt, "intForLe");
@@ -73,8 +65,20 @@ MainWidget::MainWidget(QWidget *parent) :
 
     // testing saving core
     Test t;
+    t.info.s = "234";
     SbAutoSaver::saveEveryField(t);
     SbAutoSaver::loadEveryField(t);
+
+//    TestNs::Lol l(TestNs::Lol::lol2);
+//    {
+//        QSettings s("ttest.ini", QSettings::IniFormat);
+//        s.setValue("test", QVariant::fromValue(l));
+//    }
+//    {
+//        QSettings s("ttest.ini", QSettings::IniFormat);
+//        auto lo = s.value("test").value<TestNs::Lol>();
+//            qDebug() << lo;
+//    }
 
 }
 

@@ -2,7 +2,6 @@
 DEFINES += __SETTINGSBINDER__
 
 CONFIG += c++17
-QMAKE_CXXFLAGS += -std=c++17
 
 SOURCES += \
     $$PWD/bindedsettings.cpp \
@@ -13,8 +12,8 @@ HEADERS += \
     $$PWD/bindedsettings.h \
     $$PWD/lightbinding.h \
     $$PWD/sbvariantsaver.h \
-    $$PWD/simplereflex.h
-
+    $$PWD/simplereflex.h \
+    $$PWD/lightbindings/lbtools.h
 
 HEADERS += \
     $$PWD/lightbindings/actions.h \
@@ -26,5 +25,7 @@ HEADERS += \
     $$PWD/lightbindings/radiobuttons.h \
     $$PWD/lightbindings/spinboxes.h \
     $$PWD/sbautosaver.h
-
 }
+
+
+

@@ -11,7 +11,13 @@ void saveEveryField(T& t, const QString groupName = typeid (T()).name(), const Q
     sets.beginGroup(groupName);
     int i = 0;
     SimpleReflex::for_each_member(t, [&i, &sets](auto& member){
-        sets.setValue(QString("field_%1_%2").arg(typeid(member).name()).arg(i++), member);
+        using Type = typename std::remove_reference<decltype (member)>::type;
+        if constexpr(std::is_enum<Type>::value){
+            sets.setValue(QString("field_%1_%2").arg(typeid(member).name()).arg(i++), (static_cast<uint>(member)));
+        }
+        else{
+            sets.setValue(QString("field_%1_%2").arg(typeid(member).name()).arg(i++), QVariant::fromValue<Type>(member));
+        }
     });
     sets.endGroup();
 }
@@ -23,8 +29,18 @@ void loadEveryField(T &t, const QString groupName = typeid (T()).name(), const Q
     int i = 0;
     SimpleReflex::for_each_member(t, [&i, &sets](auto& member) mutable{
         //add check for enum class
-        member = sets.value(QString("field_%1_%2").arg(typeid(member).name())
-                            .arg(i++), member).template value<typename std::remove_reference<decltype (member)>::type>();
+        using Type = typename std::remove_reference<decltype (member)>::type;
+        if constexpr(std::is_enum<Type>::value){
+            member = static_cast<Type>(sets.value(QString("field_%1_%2").arg(typeid(member).name())
+                                .arg(i++),
+                                QVariant::fromValue(static_cast<int>(member))).toInt());
+        }
+        else{
+            member = sets.value(QString("field_%1_%2").arg(typeid(member).name())
+                                .arg(i++),
+                                QVariant::fromValue(member))
+                    .template value<Type>();
+        }
     });
     sets.endGroup();
 }
