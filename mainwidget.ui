@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>899</width>
-    <height>416</height>
+    <width>1030</width>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,53 +24,61 @@
        <string>Tab 1</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="1">
-        <widget class="QGroupBox" name="groupBox_2">
+       <item row="1" column="1">
+        <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>Остальное</string>
+          <string>Enums</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>bool - QCheckBox</string>
-            </property>
-           </widget>
-          </item>
+         <layout class="QGridLayout" name="gridLayout_4">
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="dsbDouble"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_10">
+           <widget class="QRadioButton" name="radioButton_2">
             <property name="text">
-             <string>double - QDoubleSpinBox</string>
+             <string>State - 1</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="sbInt"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_9">
+           <widget class="QRadioButton" name="radioButton_3">
             <property name="text">
-             <string>int - QSpinBox</string>
+             <string>State - 2</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QCheckBox" name="chb">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Value</string>
+             <string>enum - QComboBox</string>
             </property>
            </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="cbEnum"/>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="cbInt"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QRadioButton" name="radioButton">
             <property name="text">
-             <string>int - QComboBox</string>
+             <string>State - 0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>enum class - QGroupButton</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>enum - label</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLabel" name="lblEnum">
+            <property name="text">
+             <string>default label</string>
             </property>
            </widget>
           </item>
@@ -156,157 +164,55 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QGroupBox" name="groupBox_3">
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Enums</string>
+          <string>Остальное</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="1" column="1">
-           <widget class="QRadioButton" name="radioButton_2">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>State - 1</string>
+             <string>int - QComboBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="chb">
+            <property name="text">
+             <string>Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>bool - QCheckBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>double - QDoubleSpinBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="dsbDouble"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>int - QSpinBox</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QRadioButton" name="radioButton_3">
-            <property name="text">
-             <string>State - 2</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>enum - QComboBox</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QComboBox" name="cbEnum"/>
+           <widget class="QSpinBox" name="sbInt"/>
           </item>
           <item row="0" column="1">
-           <widget class="QRadioButton" name="radioButton">
-            <property name="text">
-             <string>State - 0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>enum class - QGroupButton</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_21">
-            <property name="text">
-             <string>enum - label</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLabel" name="lblEnum">
-            <property name="text">
-             <string>default label</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="2" rowspan="2">
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>В работе:</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>QByteArray- QLineEdit</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="leString_2"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLineEdit" name="leString_3"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_18">
-            <property name="text">
-             <string>char - QLineEdit</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
-           <widget class="QTimeEdit" name="timeEdit_2"/>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>QTime - QTimeEdit</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QTimeEdit" name="timeEdit"/>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>bool - QToolButton</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>int- QStackedWidget</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="2">
-           <widget class="QTabWidget" name="tabWidget">
-            <widget class="QWidget" name="tab">
-             <attribute name="title">
-              <string>Tab 1</string>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="tab_2">
-             <attribute name="title">
-              <string>Tab 2</string>
-             </attribute>
-            </widget>
-           </widget>
-          </item>
-          <item row="6" column="2">
-           <widget class="QToolButton" name="toolButton">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QLabel" name="label_14">
-            <property name="text">
-             <string>double - QTimeEdit</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="leString_4"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string>QBitArray- QLineEdit</string>
-            </property>
-           </widget>
+           <widget class="QComboBox" name="cbInt"/>
           </item>
          </layout>
         </widget>
@@ -444,51 +350,7 @@
           <string>Примеры - Остальное</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_17">
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="sbIntL"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_64">
-            <property name="text">
-             <string>bool - QCheckBox</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_62">
-            <property name="text">
-             <string>int - QSpinBox</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_63">
-            <property name="text">
-             <string>double - QDoubleSpinBox</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_61">
-            <property name="text">
-             <string>int - QComboBox</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QCheckBox" name="chbL">
-            <property name="text">
-             <string>Value</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="dsbDoubleL"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="cbIntL"/>
-          </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -500,6 +362,64 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_63">
+            <property name="text">
+             <string>double - QDoubleSpinBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cbIntL"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QCheckBox" name="chbL">
+            <property name="text">
+             <string>Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_61">
+            <property name="text">
+             <string>int - QComboBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="sbIntL"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_64">
+            <property name="text">
+             <string>bool - QCheckBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="dsbDoubleL"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_62">
+            <property name="text">
+             <string>int - QSpinBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="sbChronoL">
+            <property name="maximum">
+             <number>99999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_67">
+            <property name="text">
+             <string>chrono- QSpinBox</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

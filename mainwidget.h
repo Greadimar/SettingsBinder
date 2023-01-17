@@ -65,6 +65,8 @@ private:
     bool yes = true;
 
     QButtonGroup* btngrpStates;
+
+    void testChrono();
 };
 
 #endif // MAINWIDGET_H

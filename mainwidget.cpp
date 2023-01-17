@@ -17,6 +17,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
     qRegisterMetaType<Info>("Info");
     qRegisterMetaTypeStreamOperators<Info>("Info");
+    testChrono();
     settings = new Settings(this);
 //    qRegisterMetaType<Lol>("Lol");
 //    qRegisterMetaTypeStreamOperators<Lol>("Lol");
@@ -51,11 +52,13 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->leUintL->setText("15");
     ui->leStringL->setText("Some");
     ui->leIntL->setText("15");
+
     LightBinding::bindLeToVal(ls.intForLe, ui->leIntL);
     LightBinding::bindLeToVal(ls.uintForLe, ui->leUintL);
     LightBinding::bindLeToVal(ls.strForLe, ui->leStringL);
 
     ls.setVars(SbVariantSaver::loadVarVec("LightSettings"));
+    LightBinding::bindSbFromVal(ls.msecs, ui->sbChronoL);
     LightBinding::bindLeFromVal(ls.shortForLe, ui->leShortL);
     LightBinding::bindLeFromHex(ls.uintHexForLe, ui->leUintHexL);
     LightBinding::bindSbFromVal(ls.intForSb, ui->sbIntL);
@@ -87,6 +90,23 @@ MainWidget::~MainWidget()
     settings->save();
     SbVariantSaver::saveVarVec(ls.getVar(), "LightSettings");
     delete ui;
+}
+
+
+
+
+
+struct TestChrono{
+     std::chrono::milliseconds msecs{10000};
+};
+
+void MainWidget::testChrono()
+{
+    TestChrono t;
+    qRegisterMetaTypeStreamOperators<std::chrono::milliseconds>("std::chrono::milliseconds");
+     t.msecs = std::chrono::milliseconds(9);
+    SbAutoSaver::saveEveryField(t);
+    SbAutoSaver::loadEveryField(t);
 }
 
 

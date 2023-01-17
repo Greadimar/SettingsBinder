@@ -1,7 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 #include "bindedsettings.h"
-
+#include "chronosupport.h"
 //Q_ENUM(States)
 namespace SomeNamespace {
 Q_NAMESPACE
@@ -112,36 +112,44 @@ private:
     SomeNamespace::NsEnumState m_stateForCb{SomeNamespace::NsEnumState::nsState1};
 };
 
-
+Q_DECLARE_METATYPE(std::chrono::milliseconds)
 class LightSettings{
 public:
+
     uint uintForLe;
     uint uintHexForLe;
+
     int intForLe;
     short shortForLe;
     QString strForLe;
     double dblForLe;
     bool boolForChb;
     bool boolForAct;
-    enum class s {
+    enum class S {
         s1,
         s2,
         s3
-    };
+    }s;
+     std::chrono::milliseconds msecs{99}; // not in vars
     int intForSb;
     double dblForDsb;
     QVector<QVariant> getVar(){
-        return QVector<QVariant>{uintHexForLe, shortForLe, dblForLe, boolForChb, intForSb, dblForDsb, boolForAct};
+        return QVector<QVariant>{uintForLe, uintHexForLe,
+                    intForLe, shortForLe, dblForLe, boolForChb, boolForAct, QVariant::fromValue(msecs), intForSb, dblForDsb};
     }
     void setVars(const QVector<QVariant>& v){
-        if (v.size() < 7) return;
-        uintHexForLe = v.at(0).toUInt();
-        shortForLe = static_cast<short>(v.at(1).toInt());
-        dblForLe = v.at(2).toDouble();
-        boolForChb = v.at(3).toBool();
-        intForSb = v.at(4).toInt();
-        dblForDsb = v.at(5).toDouble();
-        boolForAct = v.at(6).toBool();
+        if (v.size() < 9) return;
+        uintForLe = v.at(0).toUInt();
+        uintHexForLe = v.at(1).toUInt();
+        intForLe = v.at(2).toInt();
+        shortForLe = static_cast<short>(v.at(3).toInt());
+        dblForLe = v.at(4).toDouble();
+        boolForChb = v.at(5).toBool();
+          boolForAct = v.at(6).toBool();
+          msecs = v.at(7).value<decltype(msecs)>();
+        intForSb = v.at(8).toInt();
+        dblForDsb = v.at(9).toDouble();
+
     }
 };
 

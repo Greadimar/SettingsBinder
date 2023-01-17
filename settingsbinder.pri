@@ -1,7 +1,8 @@
 !contains(DEFINES, __SETTINGSBINDER__){
 DEFINES += __SETTINGSBINDER__
 
-CONFIG += c++17
+CONFIG += c++14
+QMAKE_CXXFLAGS += -std=c++14
 
 SOURCES += \
     $$PWD/bindedsettings.cpp \
@@ -12,8 +13,8 @@ HEADERS += \
     $$PWD/bindedsettings.h \
     $$PWD/lightbinding.h \
     $$PWD/sbvariantsaver.h \
-    $$PWD/simplereflex.h \
-    $$PWD/lightbindings/lbtools.h
+    $$PWD/simplereflex.h
+
 
 HEADERS += \
     $$PWD/lightbindings/actions.h \
@@ -26,6 +27,16 @@ HEADERS += \
     $$PWD/lightbindings/spinboxes.h \
     $$PWD/sbautosaver.h
 }
+!exists(../CommonTools/CommonTools.pri){
+    message("SettingsBinder: CommonTools not found")
+}
+contains(DEFINES, __HEXEDIT__){
+    $$PWD/lightbindings/hexedits.h
+}
 
+HEADERS += \
+    $$PWD/chronosupport.h
 
+SOURCES += \
+    $$PWD/chronosupport.cpp
 

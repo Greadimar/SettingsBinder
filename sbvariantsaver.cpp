@@ -1,10 +1,9 @@
 #include "sbvariantsaver.h"
-
+//#include "../CommonTools/debugtools.h"
 
 void SbVariantSaver::saveAllProperties(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
-    if constexpr(debugSs) qDebug()<< Q_FUNC_INFO << " saving properties";
     QSettings qsets(fileName, QSettings::IniFormat);
     int offset = metaTarget->propertyOffset();
     int end = metaTarget->propertyCount();
@@ -28,23 +27,17 @@ void SbVariantSaver::saveAllProperties(QObject *target, QString fileName)
 void SbVariantSaver::loadAllProperties(QObject *target, QString fileName)
 {
     const QMetaObject* metaTarget = getMeta(target);
-    if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" ss load";
     QStringList propNames = collectPropsNames(target);
     QString setsName(fileName);
     QSettings qsets(setsName, QSettings::IniFormat);
     qsets.beginGroup(target->objectName());
     for (QString& propName: propNames){
         QMetaProperty metaProp = metaTarget->property(metaTarget->indexOfProperty(propName.toLocal8Bit().data()));
-        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<"isStored, isEnum"<<metaProp.isStored(target)<<metaProp.isEnumType();
         QVariant value = qsets.value(propName, metaProp.read(target));
-        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" what is loading now: "<<value;
         if (!value.isNull()){
             metaProp.write(target, value);
         }
         QMetaMethod signal = metaProp.notifySignal();
-        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" check loading signal: type:"<<signal.typeName() << ", is valid: "<<signal.isValid()<<", signature: " <<signal.methodSignature();
-        bool emitted = signal.invoke(target);
-        if constexpr(debugSs) qDebug()<<Q_FUNC_INFO<<" signal emitted: "<<emitted;
     }
     qsets.endGroup();
 }

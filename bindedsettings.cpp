@@ -1,7 +1,6 @@
 #include "bindedsettings.h"
 
 
-
 BindedSettings::BindedSettings(QObject *parent): QObject(parent)
 {
     fillSupportedLits();
@@ -14,7 +13,6 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     QLineEdit* le = targetWt;
     //getting metaproperty
     QMetaProperty mp = metaObject()->property(metaObject()->indexOfProperty(propertyName));
-    if constexpr(debugBs) qDebug() << metaObject()->indexOfProperty(propertyName);
     if (!mp.isStored(this)){
         qWarning()<<Q_FUNC_INFO<<": can't bind "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - no property found";
         return false;
@@ -31,7 +29,7 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     }
     //setting up readValue lamda
     auto reader = [=](QObject* obj) -> bool{
-        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<" reading val from settings " << mp.read(this);
+        if (debugBs) qDebug()<<Q_FUNC_INFO<<" reading val from settings " << mp.read(this);
         QString newText;
         QLineEdit* target = qobject_cast<QLineEdit*>(obj);
         if (stringFromVariant(mp.read(this), newText, t)){
@@ -51,7 +49,6 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
     //connecting textEdited and write method of property
     if (mp.isWritable()){
         connect(le, &QLineEdit::textChanged, this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on textEdit changing property";
             QVariant var(mp.type());
             if (stringToVariant(le->text(), var, t)){
                 mp.write(this, var);
@@ -59,7 +56,6 @@ bool BindedSettings::bindWtToProp(QLineEdit *targetWt, const char *propertyName)
         });
     }
     else{
-        qDebug()<<Q_FUNC_INFO<<": can't bind writing "<<targetWt->metaObject()->className()<<" to "<<propertyName << " - property is not writable";
     }
     return true;
 }
@@ -93,7 +89,6 @@ bool BindedSettings::bindWtToProp(QSpinBox *targetWt, const char *propertyName)
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(sb, qOverload<int>(&QSpinBox::valueChanged), this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on spinBox changing property";
             QVariant var(sb->value());
             mp.write(this, var);
         });
@@ -130,7 +125,6 @@ bool BindedSettings::bindWtToProp(QDoubleSpinBox *targetWt, const char *property
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(dsb, qOverload<double>(&QDoubleSpinBox::valueChanged), this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on double SpinBox changing property";
             QVariant var(dsb->value());
             mp.write(this, var);
         });
@@ -166,7 +160,6 @@ bool BindedSettings::bindWtToProp(QCheckBox *targetWt, const char *propertyName)
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(chb, &QCheckBox::toggled, this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QCheckBox changing property";
             QVariant var(chb->isChecked());
             mp.write(this, var);
             signal.invoke(this);
@@ -247,7 +240,6 @@ bool BindedSettings::bindWtToProp(QComboBox *targetWt, const char *propertyName,
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(cb, qOverload<int>(&QComboBox::currentIndexChanged), this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
             QVariant var;
             if (mp.isEnumType()){
                 if (mpHasTranslation(mp)){
@@ -308,7 +300,6 @@ bool BindedSettings::bindWtToProp(QTabWidget *targetWt, const char *propertyName
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(tw, &QTabWidget::currentChanged, this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QTabWidget changing property";
             QVariant var;
             if (mp.type() == QVariant::Int){
                 var = QVariant(tw->currentIndex());
@@ -359,7 +350,6 @@ bool BindedSettings::bindWtToProp(QButtonGroup *targetWt, const char *propertyNa
     connect(this, signal, this, slot);
     if (mp.isWritable()){
         connect(btnGrp, qOverload<int>(&QButtonGroup::buttonClicked), this, [=](){
-            if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<"on QComboBox changing property";
             QVariant var;
             if (mp.isEnumType()){
                 QMetaEnum me = mp.enumerator();
@@ -581,19 +571,14 @@ void BindedSettings::fillSupportedLits()    // TODO make it static!
 void BindedSettings::invokeReader()
 {
     int signalIdx = QObject::senderSignalIndex();
-    if (signalIdx == -1){
-        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<" was called directly, not from slot";
-    }
     QMetaMethod metaSignal = QObject::sender()->metaObject()->method(signalIdx);
     QString propName = QString::fromStdString(metaSignal.name().toStdString()).chopped(7);        //7 means "changed" of signal name;
     ReaderStruct rs = bindedMap.value(propName);
     if (rs.isEmpty){
-        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO<<" no binded value to such property";
         return;
     }
-    if (!rs.reader(rs.obj))
-        if constexpr(debugBs) qDebug()<<Q_FUNC_INFO << " reader returned false, can't read property to object";
 }
+
 
 bool BindedSettings::addEnumTranslation(std::function<QString (QVariant)> enumToStr, std::function<QVariant(QString)> strToEnum, const char *propertyName)
 {
@@ -617,14 +602,12 @@ bool BindedSettings::addEnumTranslation(std::function<QString (QVariant)> enumTo
 
 void BindedSettings::save()
 {
-    if constexpr(debugBs) qDebug()<<Q_FUNC_INFO;
     SbVariantSaver::saveAllProperties(this);
 
 }
 
 void BindedSettings::load()
 {
-    if constexpr(debugBs) qDebug()<<Q_FUNC_INFO;
     SbVariantSaver::loadAllProperties(this);
 }
 

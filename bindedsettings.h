@@ -18,7 +18,7 @@
 #include <QDebug>
 #include <functional>
 #include "sbvariantsaver.h"
-
+//#include "../CommonTools/basictools.h"
 
 class BindedSettings: public QObject
 {
@@ -59,31 +59,31 @@ public:
 
     template <typename Tval>bool stringTo(const QString& val, Tval& result, IntType type = IntType::notInt){
         bool isOk{false};
-        if constexpr (std::is_same<Tval, uint>::value){
+        if (std::is_same<Tval, uint>::value){
             result = val.toUInt(&isOk, static_cast<int>(type));
             return isOk;
         }
-        if constexpr (std::is_same<Tval, int>::value){
+        if (std::is_same<Tval, int>::value){
             result = val.toInt(&isOk, static_cast<int>(type));
             return isOk;
         }
-        if constexpr(std::is_same<Tval, double>::value){
+        if (std::is_same<Tval, double>::value){
             result = val.toDouble(&isOk);
             return isOk;
         }
-        if constexpr(std::is_same<Tval, long>::value){
+        if (std::is_same<Tval, long>::value){
             result = val.toLong(&isOk);
             return isOk;
         }
-        if constexpr(std::is_same<Tval, short>::value){
+        if (std::is_same<Tval, short>::value){
             result = val.toShort(&isOk);
             return isOk;
         }
-        if constexpr(std::is_same<Tval, ushort>::value){
+        if (std::is_same<Tval, ushort>::value){
             result = val.toUShort(&isOk);
             return isOk;
         }
-        qWarning()<<Q_FUNC_INFO<<": can't convert string to "<<std::type_info(result);
+        qWarning()<<Q_FUNC_INFO<<": can't convert string to " << std::type_info(result);
         return isOk;
     }
     bool stringToVariant(const QString& val, QVariant& result, IntType type = IntType::notInt);

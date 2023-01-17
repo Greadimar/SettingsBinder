@@ -4,24 +4,19 @@
 #include <QMutexLocker>
 #include "notsupported.h"
 namespace LightBinding {
-template <typename TVal>
+
+
+template <typename TVal,
+          typename std::enable_if<std::is_enum<TVal>::value || std::is_integral<TVal>::value, bool>::type = true>
 inline void updateCbToVal(TVal& val, int changedVal){
-    if constexpr (std::is_enum<TVal>::value || std::is_integral<TVal>::value){
         val = static_cast<TVal>(changedVal);
-    }
-    else {
-        NOTSUPPORTED<TVal>();
-    }
 }
-template <typename TVal>
+template <typename TVal,
+          typename std::enable_if<std::is_enum<TVal>::value || std::is_integral<TVal>::value, bool>::type = true>
 inline void updateCbToVal(std::atomic<TVal>& val, int changedVal){
-    if constexpr (std::is_enum<TVal>::value || std::is_integral<TVal>::value){
         val = static_cast<TVal>(changedVal);
-    }
-    else {
-        NOTSUPPORTED<TVal>();
-    }
 }
+
 template <typename TVal>
 inline void updateCbToVal(TVal& val, int changedVal, QMutex& m){
     static_assert (std::is_enum<TVal>::value || std::is_integral<TVal>::value, "This type is not supported");

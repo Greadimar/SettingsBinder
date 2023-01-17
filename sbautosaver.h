@@ -2,7 +2,9 @@
 #define AUTOSAVER_H
 #include <QSettings>
 #include <QDir>
+#if (defined __cplusplus) && (__cplusplus >= 201401L)
 #include "simplereflex.h"
+
 namespace SbAutoSaver{
 template <class T>
 void saveEveryField(T& t, const QString groupName = typeid (T()).name(), const QString filename = QDir::currentPath()+"/autosettings.ini")
@@ -46,6 +48,6 @@ void loadEveryField(T &t, const QString groupName = typeid (T()).name(), const Q
 }
 }
 
-
+#endif
 
 #endif // AUTOSAVER_H

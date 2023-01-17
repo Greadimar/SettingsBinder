@@ -2,7 +2,8 @@
 #define SIMPLEREFLEX_H
 #include <type_traits>
 #include <tuple>
-
+//#include "../CommonTools/basictools.h"
+#if (defined __cplusplus) && (__cplusplus >= 201401L)
 namespace SimpleReflex{
 struct init
 {
@@ -149,7 +150,7 @@ constexpr auto size_(tag<0>)
 template <typename T>
 constexpr std::size_t size_s()
 {
-#if __cplusplus >= 201703L
+#if (defined __cplusplus) && (__cplusplus >= 201703L)
     static_assert(std::is_aggregate_v<T>, "your struct is not aggregate ({}), correct it or use boost.PFR instead");
 #endif
     return size_<T>(tag<25>{}); // highest supported number
@@ -159,7 +160,7 @@ constexpr std::size_t size_s()
 template <typename T>
 auto as_tuple(T const& v)
 {
-#if __cplusplus >= 201703L
+#if (defined __cplusplus) && (__cplusplus >= 201703L)
    static_assert(std::is_aggregate_v<T>);
 #endif
   if constexpr (size_s<T>() == 30u){
@@ -290,7 +291,7 @@ auto as_tuple(T const& v)
 template <typename T, typename F>
 void for_each_member(T & v, F f)
 {
-#if __cplusplus >= 201703L
+#if (defined __cplusplus) && (__cplusplus >= 201703L)
 static_assert(std::is_aggregate_v<T>);
 #endif
 if constexpr (size_s<T>() == 30u){
@@ -429,5 +430,5 @@ else if constexpr (size_s<T>() == 1u){
 }
 }
 }
-
+#endif
 #endif // SIMPLEREFLEX_H
